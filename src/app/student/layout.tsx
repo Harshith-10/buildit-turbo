@@ -1,6 +1,8 @@
 import {
   BookOpen,
+  Calendar,
   Code,
+  History,
   LayoutDashboard,
   Library,
   MessageCircle,
@@ -24,6 +26,7 @@ const sidebarSections: SidebarSection[] = [
       {
         label: "Exams",
         icon: <NotebookPen />,
+        defaultOpen: true,
         submenu: [
           {
             label: "Take Exam",
@@ -33,12 +36,12 @@ const sidebarSections: SidebarSection[] = [
           {
             label: "Upcoming Exams",
             href: "/student/exams/upcoming",
-            icon: <PencilLine />,
+            icon: <Calendar />,
           },
           {
             label: "Past Exams",
             href: "/student/exams/past",
-            icon: <PencilLine />,
+            icon: <History />,
           },
         ],
       },

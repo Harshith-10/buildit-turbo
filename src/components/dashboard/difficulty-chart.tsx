@@ -1,5 +1,8 @@
 "use client";
 
+import axios from "axios";
+import { PieChartIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import {
   Card,
@@ -8,14 +11,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { mockDifficultyDistribution } from "./mock-data";
+import { EmptyOutline } from "../common/empty-outline";
+
+// ... (keep imports)
 
 interface DifficultyChartProps {
-  difficultyChart?: {
-    difficulty: string;
-    solved: number;
-    total: number;
-  }[];
   difficultyDistribution?: {
     name: string;
     value: number;
@@ -51,35 +51,58 @@ function CustomTooltip({
 }
 
 export function DifficultyChart({
-  difficultyDistribution = mockDifficultyDistribution,
+  difficultyDistribution: initialData,
 }: DifficultyChartProps) {
+  const [difficultyDistribution, setDifficultyDistribution] = useState<
+    {
+      name: string;
+      value: number;
+      color: string;
+    }[]
+  >(initialData || []);
+
+  useEffect(() => {
+    if (!initialData) {
+      axios.get("/api/student/difficulty-distribution").then((response) => {
+        setDifficultyDistribution(response.data);
+      });
+    }
+  }, [initialData]);
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>Difficulty Breakdown</CardTitle>
         <CardDescription>Problems solved by difficulty</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="h-[180px] w-full overflow-hidden">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={difficultyDistribution}
-                cx="50%"
-                cy="50%"
-                innerRadius={45}
-                outerRadius={70}
-                paddingAngle={5}
-                dataKey="value"
-              >
-                {difficultyDistribution.map((entry) => (
-                  <Cell key={`cell-${entry.name}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip />} />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+      <CardContent className="h-full flex items-center justify-center">
+        {difficultyDistribution.length ? (
+          <div className="h-[200px] w-full overflow-hidden">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={difficultyDistribution}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={45}
+                  outerRadius={70}
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {difficultyDistribution.map((entry) => (
+                    <Cell key={`cell-${entry.name}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <EmptyOutline
+            title="No Data"
+            description="No data available"
+            icon={<PieChartIcon />}
+          />
+        )}
         <div className="flex justify-center gap-4 mt-2">
           {difficultyDistribution.map((item) => (
             <div key={item.name} className="flex items-center gap-2">

@@ -58,7 +58,7 @@ export default function User({ size }: { size: "default" | "small" }) {
           {size === "default" ? (
             <div className="w-full flex items-center gap-2 rounded-lg p-2 hover:bg-accent transition-colors">
               <Avatar className="h-10 w-10 z-50">
-                <AvatarImage src={user.image || "/placeholder.svg"} />
+                <AvatarImage src={user.image || "/null"} />
                 <AvatarFallback className="bg-emerald-500/20 text-emerald-500 uppercase">
                   {user.name
                     .split(" ")
@@ -85,7 +85,7 @@ export default function User({ size }: { size: "default" | "small" }) {
             <Tooltip side="right">
               <TooltipTrigger asChild>
                 <Avatar className="h-8 w-8 cursor-pointer">
-                  <AvatarImage src={user.image || "/placeholder.svg"} />
+                  <AvatarImage src={user.image || "/nulllder.svg"} />
                   <AvatarFallback className="bg-emerald-500/20 text-emerald-500 rounded h-full w-full uppercase text-xs">
                     {user.name
                       .split(" ")
@@ -105,7 +105,7 @@ export default function User({ size }: { size: "default" | "small" }) {
       <DropdownMenuContent side="right" align="end" className="w-56">
         <DropdownMenuLabel className="flex items-center gap-2">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={user.image || "/placeholder.svg"} />
+            <AvatarImage src={user.image || "/nulllder.svg"} />
             <AvatarFallback className="bg-emerald-500/20 text-emerald-500 uppercase">
               {user.name
                 .split(" ")

@@ -1,6 +1,8 @@
 import "dotenv/config";
+import { adminClient, usernameClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
 
-export const { signIn, useSession, signOut } = createAuthClient({
+export const { signIn, signUp, signOut, useSession } = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL as string,
+  plugins: [usernameClient(), adminClient()],
 });

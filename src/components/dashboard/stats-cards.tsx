@@ -5,46 +5,57 @@ import { Flame, Target, TrendingUp, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import type { User } from "@/types/auth";
+
 import { Tilt, TiltContent } from "../animate-ui/primitives/effects/tilt";
 
 export function StatsCards() {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [stats, setStats] = useState<{
+    problemsSolved: number;
+    totalProblems: number;
+    examsPassed: number;
+    totalExams: number;
+    streak: number;
+    rank: number;
+  } | null>(null);
 
   useEffect(() => {
-    axios.get("/api/me").then((response) => {
-      setCurrentUser(response.data);
+    axios.get("/api/student/stats").then((response) => {
+      setStats(response.data);
     });
   }, []);
 
-  if (!currentUser) {
+  if (!stats) {
     return null;
   }
 
-  const stats = [
+  const statsData = [
     {
       title: "Problems Solved",
-      value: currentUser.problemsSolved,
-      total: currentUser.totalProblems,
+      value: stats.problemsSolved,
+      total: stats.totalProblems.toString(),
       icon: Target,
       color: "text-emerald-500",
       bgColor: "bg-emerald-500/10",
       borderColor: "group-hover:border-emerald-500",
-      progress: (currentUser.problemsSolved / currentUser.totalProblems) * 100,
+      progress:
+        stats.totalProblems > 0
+          ? (stats.problemsSolved / stats.totalProblems) * 100
+          : 0,
     },
     {
       title: "Exams Passed",
-      value: currentUser.examsPassed,
-      total: currentUser.totalExams,
+      value: stats.examsPassed,
+      total: stats.totalExams.toString(),
       icon: Trophy,
       color: "text-amber-500",
       bgColor: "bg-amber-500/10",
       borderColor: "group-hover:border-amber-500",
-      progress: (currentUser.examsPassed / currentUser.totalExams) * 100,
+      progress:
+        stats.totalExams > 0 ? (stats.examsPassed / stats.totalExams) * 100 : 0,
     },
     {
       title: "Current Streak",
-      value: currentUser.streak,
+      value: stats.streak,
       suffix: "days",
       icon: Flame,
       color: "text-orange-500",
@@ -52,9 +63,10 @@ export function StatsCards() {
       borderColor: "group-hover:border-orange-500",
     },
     {
-      title: "Global Rank",
-      value: `#${currentUser.rank}`,
-      change: "+5",
+      title: "Institute Rank",
+      value: `#${stats.rank}`,
+      total: "0",
+      change: "",
       icon: TrendingUp,
       color: "text-blue-500",
       bgColor: "bg-blue-500/10",
@@ -64,7 +76,7 @@ export function StatsCards() {
 
   return (
     <div className="grid grid-cols-4 gap-4">
-      {stats.map((stat) => (
+      {statsData.map((stat) => (
         <Tilt key={stat.title} className="h-full group">
           <TiltContent className="h-full">
             <Card
@@ -86,11 +98,9 @@ export function StatsCards() {
                           / {stat.total}
                         </span>
                       )}
-                      {stat.suffix && (
-                        <span className="text-sm text-muted-foreground">
-                          {stat.suffix}
-                        </span>
-                      )}
+                      <span className="text-sm text-muted-foreground">
+                        {stat.suffix}
+                      </span>
                       {stat.change && (
                         <span className="text-sm text-emerald-500 font-medium">
                           {stat.change}

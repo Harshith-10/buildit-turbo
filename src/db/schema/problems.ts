@@ -9,8 +9,8 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import { user } from "./auth";
 import { difficultyEnum } from "./enums";
-import { users } from "./users";
 
 export const problems = pgTable("problems", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -20,7 +20,7 @@ export const problems = pgTable("problems", {
   category: text("category").notNull(),
   description: text("description").notNull(),
 
-  creatorId: uuid("creator_id").references(() => users.id, {
+  creatorId: text("creator_id").references(() => user.id, {
     onDelete: "set null",
   }),
   isPublic: boolean("is_public").default(true).notNull(),
@@ -55,8 +55,8 @@ export const problemTags = pgTable(
 export const userProblemStatus = pgTable(
   "user_problem_status",
   {
-    userId: uuid("user_id")
-      .references(() => users.id, { onDelete: "cascade" })
+    userId: text("user_id")
+      .references(() => user.id, { onDelete: "cascade" })
       .notNull(),
     problemId: uuid("problem_id")
       .references(() => problems.id, { onDelete: "cascade" })

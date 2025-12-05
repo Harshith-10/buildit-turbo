@@ -1,11 +1,11 @@
 import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { user } from "./auth";
 import { notificationTypeEnum } from "./enums";
-import { users } from "./users";
 
 export const notifications = pgTable("notifications", {
   id: uuid("id").defaultRandom().primaryKey(),
-  userId: uuid("user_id")
-    .references(() => users.id, { onDelete: "cascade" })
+  userId: text("user_id")
+    .references(() => user.id, { onDelete: "cascade" })
     .notNull(),
   title: text("title").notNull(),
   message: text("message").notNull(),

@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { execSync } from "node:child_process";
 import { db } from "../src/db";
-import { users } from "../src/db/schema";
+import { user } from "../src/db/schema";
 
 async function setup() {
   console.log("Pushing schema to database...");
@@ -15,14 +15,15 @@ async function setup() {
   console.log("Creating default admin user...");
   try {
     await db
-      .insert(users)
+      .insert(user)
       .values({
+        id: "admin-user",
         name: "Harshith Doddipalli",
         email: "23951A052X@iare.ac.in",
         role: "admin",
-        avatar: "/harsh.png",
+        image: "/harsh.png",
       })
-      .onConflictDoNothing({ target: users.email });
+      .onConflictDoNothing({ target: user.email });
     console.log("Default user created.");
   } catch (error) {
     console.error("Error creating user:", error);

@@ -1,12 +1,12 @@
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { users } from "./users";
+import { user } from "./auth";
 
 export const resources = pgTable("resources", {
   id: uuid("id").defaultRandom().primaryKey(),
   title: text("title").notNull(),
   url: text("url").notNull(),
   type: text("type").notNull(), // e.g. 'pdf', 'video', 'link'
-  uploadedBy: uuid("uploaded_by").references(() => users.id, {
+  uploadedBy: text("uploaded_by").references(() => user.id, {
     onDelete: "set null",
   }),
 

@@ -8,8 +8,8 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import { user } from "./auth";
 import { problems } from "./problems";
-import { users } from "./users";
 
 export const collections = pgTable("collections", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -17,8 +17,8 @@ export const collections = pgTable("collections", {
   slug: text("slug").notNull().unique(),
   description: text("description").notNull(),
 
-  creatorId: uuid("creator_id")
-    .references(() => users.id, { onDelete: "cascade" })
+  creatorId: text("creator_id")
+    .references(() => user.id, { onDelete: "cascade" })
     .notNull(),
   isPublic: boolean("is_public").default(false).notNull(),
 

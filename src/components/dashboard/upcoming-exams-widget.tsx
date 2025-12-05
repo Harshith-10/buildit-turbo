@@ -1,7 +1,10 @@
 "use client";
 
-import { ArrowRight, Calendar, Clock } from "lucide-react";
+import axios from "axios";
+import { ArrowRight, Calendar, Clock, PencilLine } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { EmptyOutline } from "@/components/common/empty-outline";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { type Exam, mockExams } from "./mock-data";
+import type { Exam } from "./mock-data";
 
 const difficultyColors = {
   easy: "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20",
@@ -24,14 +27,24 @@ interface UpcomingExamsWidgetProps {
 }
 
 export function UpcomingExamsWidget({
-  exams = mockExams,
+  exams: initialExams,
 }: UpcomingExamsWidgetProps) {
+  const [exams, setExams] = useState<Exam[]>(initialExams || []);
+
+  useEffect(() => {
+    if (!initialExams) {
+      axios.get("/api/student/upcoming-exams").then((response) => {
+        setExams(response.data);
+      });
+    }
+  }, [initialExams]);
+
   const upcomingExams = exams
     .filter((e) => e.status === "upcoming")
     .slice(0, 3);
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
           <CardTitle>Upcoming Exams</CardTitle>
@@ -43,7 +56,14 @@ export function UpcomingExamsWidget({
           </Link>
         </Button>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="h-full space-y-4">
+        {!upcomingExams.length && (
+          <EmptyOutline
+            title="No exams scheduled"
+            description="You have no exams scheduled."
+            icon={<PencilLine />}
+          />
+        )}
         {upcomingExams.map((exam) => (
           <div
             key={exam.id}

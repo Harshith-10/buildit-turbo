@@ -13,6 +13,7 @@ export const examStatusEnum = pgEnum("exam_status", [
   "upcoming",
   "live",
   "completed",
+  "missed",
 ]);
 
 export const submissionStatusEnum = pgEnum("submission_status", [

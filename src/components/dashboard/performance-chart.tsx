@@ -1,5 +1,8 @@
 "use client";
 
+import axios from "axios";
+import { Code } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -16,7 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { mockPerformanceData } from "./mock-data";
+import { EmptyOutline } from "../common/empty-outline";
 
 function CustomTooltip({
   active,
@@ -52,16 +55,29 @@ function CustomTooltip({
 }
 
 interface PerformanceChartProps {
-  performanceData?: {
+  initialData?: {
     month: string;
     problemsSolved: number;
     examScore: number;
   }[];
 }
 
-export function PerformanceChart({
-  performanceData = mockPerformanceData,
-}: PerformanceChartProps) {
+export function PerformanceChart({ initialData }: PerformanceChartProps) {
+  const [performanceData, setPerformanceData] = useState<
+    {
+      month: string;
+      problemsSolved: number;
+      examScore: number;
+    }[]
+  >(initialData || []);
+
+  useEffect(() => {
+    if (!initialData) {
+      axios.get("/api/student/performance").then((response) => {
+        setPerformanceData(response.data);
+      });
+    }
+  }, [initialData]);
   return (
     <Card>
       <CardHeader>
@@ -70,6 +86,13 @@ export function PerformanceChart({
       </CardHeader>
       <CardContent>
         <div className="h-[300px] w-full overflow-hidden">
+          {!performanceData.length && (
+            <EmptyOutline
+              title="No performance data"
+              description="You have no performance data."
+              icon={<Code />}
+            />
+          )}
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={performanceData}

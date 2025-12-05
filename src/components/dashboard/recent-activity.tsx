@@ -1,6 +1,15 @@
 "use client";
 
-import { AlertCircle, CheckCircle2, Clock, XCircle } from "lucide-react";
+import axios from "axios";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  History,
+  XCircle,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { EmptyOutline } from "@/components/common/empty-outline";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -9,7 +18,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { mockProblems, mockRecentSubmissions } from "./mock-data";
 
 const statusConfig: Record<
   string,
@@ -53,7 +61,7 @@ const statusConfig: Record<
 };
 
 interface RecentActivityProps {
-  recentSubmissions?: {
+  initialSubmissions?: {
     id: string;
     problemId: string;
     status: string;
@@ -61,17 +69,32 @@ interface RecentActivityProps {
     runtime: string;
     memory: string;
     timestamp: string;
-  }[];
-  problems?: {
-    id: string;
-    title: string;
+    problemTitle: string;
   }[];
 }
 
-export function RecentActivity({
-  recentSubmissions = mockRecentSubmissions,
-  problems = mockProblems,
-}: RecentActivityProps) {
+export function RecentActivity({ initialSubmissions }: RecentActivityProps) {
+  const [submissions, setSubmissions] = useState<
+    {
+      id: string;
+      problemId: string;
+      status: string;
+      language: string;
+      runtime: string;
+      memory: string;
+      timestamp: string;
+      problemTitle: string;
+    }[]
+  >(initialSubmissions || []);
+
+  useEffect(() => {
+    if (!initialSubmissions) {
+      axios.get("/api/student/recent-activity").then((response) => {
+        setSubmissions(response.data);
+      });
+    }
+  }, [initialSubmissions]);
+
   return (
     <Card>
       <CardHeader>
@@ -79,9 +102,15 @@ export function RecentActivity({
         <CardDescription>Your latest submissions</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {recentSubmissions.map((sub) => {
-          const problem = problems.find((p) => p.id === sub.problemId);
-          const status = statusConfig[sub.status];
+        {!submissions.length && (
+          <EmptyOutline
+            title="No recent activity"
+            description="You have not submitted any problems yet."
+            icon={<History />}
+          />
+        )}
+        {submissions.map((sub) => {
+          const status = statusConfig[sub.status] || statusConfig.accepted; // Fallback
           const StatusIcon = status.icon;
 
           return (
@@ -94,7 +123,7 @@ export function RecentActivity({
                   <StatusIcon className={`h-4 w-4 ${status.color}`} />
                 </div>
                 <div>
-                  <p className="font-medium">{problem?.title}</p>
+                  <p className="font-medium">{sub.problemTitle}</p>
                   <p className="text-xs text-muted-foreground">
                     {sub.language} •{" "}
                     {new Date(sub.timestamp).toLocaleDateString()}

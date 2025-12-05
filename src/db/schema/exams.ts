@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   boolean,
   integer,
@@ -8,9 +9,9 @@ import {
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+import { user } from "./auth";
 import { difficultyEnum, examStatusEnum } from "./enums";
 import { problems } from "./problems";
-import { users } from "./users";
 
 export const exams = pgTable("exams", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -27,6 +28,9 @@ export const exams = pgTable("exams", {
   status: examStatusEnum("status").default("draft").notNull(),
 
   topics: jsonb("topics").$type<string[]>().default([]),
+
+  rating: integer("rating").default(0),
+  ratingCount: integer("rating_count").default(0),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
@@ -50,8 +54,8 @@ export const examQuestions = pgTable(
 export const userExamStatus = pgTable(
   "user_exam_status",
   {
-    userId: uuid("user_id")
-      .references(() => users.id, { onDelete: "cascade" })
+    userId: text("user_id")
+      .references(() => user.id, { onDelete: "cascade" })
       .notNull(),
     examId: uuid("exam_id")
       .references(() => exams.id, { onDelete: "cascade" })
@@ -65,3 +69,19 @@ export const userExamStatus = pgTable(
   },
   (t) => [primaryKey({ columns: [t.userId, t.examId] })],
 );
+
+export const examsRelations = relations(exams, ({ many }) => ({
+  questions: many(examQuestions),
+  userStatuses: many(userExamStatus),
+}));
+
+export const userExamStatusRelations = relations(userExamStatus, ({ one }) => ({
+  user: one(user, {
+    fields: [userExamStatus.userId],
+    references: [user.id],
+  }),
+  exam: one(exams, {
+    fields: [userExamStatus.examId],
+    references: [exams.id],
+  }),
+}));

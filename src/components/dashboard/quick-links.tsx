@@ -75,19 +75,19 @@ const quickLinks = [
 
 export function QuickLinks() {
   return (
-    <Card>
+    <Card className="w-full h-full">
       <CardHeader>
         <CardTitle>Quick Links</CardTitle>
         <CardDescription>Jump to common actions</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-3 gap-3">
+      <CardContent className="h-full">
+        <div className="grid grid-cols-3 gap-3 h-full">
           {quickLinks.map((link) => (
             <Link key={link.title} href={link.href}>
-              <Tilt maxTilt={30} className="group w-full h-full">
+              <Tilt maxTilt={30} className="group w-full h-full ">
                 <TiltContent
                   className={cn(
-                    "w-full h-full flex flex-col items-center gap-2 rounded-lg p-4 text-center transition-colors",
+                    "w-full h-full flex flex-col items-center justify-center gap-2 rounded-lg p-4 text-center transition-colors",
                     link.bgColor,
                   )}
                 >

@@ -276,7 +276,7 @@ function TooltipOverlay() {
       refs.setReference(referenceElRef.current);
       update();
     }
-  }, [referenceElRef, refs, update]);
+  }, [referenceElRef, refs, update, currentTooltip]);
 
   const ready = x != null && y != null;
   const Component = rendered.data?.contentAsChild ? Slot : motion.div;

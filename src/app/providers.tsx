@@ -4,6 +4,7 @@ import { ThemeProvider } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type React from "react";
 import { SidebarProvider } from "@/components/animate-ui/components/radix/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 
 export function Providers({
   children,
@@ -20,7 +21,10 @@ export function Providers({
         enableSystem
         disableTransitionOnChange
       >
-        <SidebarProvider defaultOpen={defaultOpen}>{children}</SidebarProvider>
+        <SidebarProvider defaultOpen={defaultOpen}>
+          {children}
+          <Toaster />
+        </SidebarProvider>
       </ThemeProvider>
     </NuqsAdapter>
   );

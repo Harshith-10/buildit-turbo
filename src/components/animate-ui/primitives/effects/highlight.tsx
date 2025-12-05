@@ -493,10 +493,12 @@ function HighlightItem<T extends React.ElementType>({
     ? {
         onMouseEnter: (e: React.MouseEvent<HTMLDivElement>) => {
           setActiveValue(childValue);
+          props.onMouseEnter?.(e);
           element.props.onMouseEnter?.(e);
         },
         onMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => {
           setActiveValue(null);
+          props.onMouseLeave?.(e);
           element.props.onMouseLeave?.(e);
         },
       }
@@ -504,6 +506,7 @@ function HighlightItem<T extends React.ElementType>({
       ? {
           onClick: (e: React.MouseEvent<HTMLDivElement>) => {
             setActiveValue(childValue);
+            props.onClick?.(e);
             element.props.onClick?.(e);
           },
         }

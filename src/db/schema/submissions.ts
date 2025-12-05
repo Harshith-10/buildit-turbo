@@ -1,13 +1,14 @@
+import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { user } from "./auth";
 import { submissionStatusEnum } from "./enums";
 import { exams } from "./exams";
 import { problems } from "./problems";
-import { users } from "./users";
 
 export const submissions = pgTable("submissions", {
   id: uuid("id").defaultRandom().primaryKey(),
-  userId: uuid("user_id")
-    .references(() => users.id, { onDelete: "cascade" })
+  userId: text("user_id")
+    .references(() => user.id, { onDelete: "cascade" })
     .notNull(),
   problemId: uuid("problem_id")
     .references(() => problems.id, { onDelete: "cascade" })
@@ -23,3 +24,18 @@ export const submissions = pgTable("submissions", {
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const submissionsRelations = relations(submissions, ({ one }) => ({
+  user: one(user, {
+    fields: [submissions.userId],
+    references: [user.id],
+  }),
+  problem: one(problems, {
+    fields: [submissions.problemId],
+    references: [problems.id],
+  }),
+  exam: one(exams, {
+    fields: [submissions.examId],
+    references: [exams.id],
+  }),
+}));

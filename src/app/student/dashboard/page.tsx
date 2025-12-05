@@ -15,21 +15,23 @@ export default function DashboardPage() {
         {/* Stats Overview */}
         <StatsCards />
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          {/* Left Column - Charts */}
-          <div className="xl:col-span-2 space-y-6">
+        <div className="grid grid-cols-5 w-full gap-6">
+          <div className="col-span-3">
             <PerformanceChart />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <UpcomingExamsWidget />
-              <RecentActivity />
-            </div>
           </div>
-
-          {/* Right Column - Progress & Links */}
-          <div className="space-y-6">
+          <div className="col-span-2">
             <QuickLinks />
+          </div>
+          <div className="col-span-2">
+            <RecentActivity />
+          </div>
+          <div className="col-span-3">
+            <UpcomingExamsWidget />
+          </div>
+          <div className="col-span-3">
             <CategoryProgress />
+          </div>
+          <div className="col-span-2">
             <DifficultyChart />
           </div>
         </div>
