@@ -52,7 +52,10 @@ const StarRating = ({
   };
 
   return (
-    <div className={cn("flex gap-[0.3rem]", className)}>
+    <div
+      className={cn("flex gap-[0.3rem]", className)}
+      onMouseLeave={() => setHover(0)}
+    >
       {[1, 2, 3, 4, 5].map((index) => {
         const isSelected = index <= (hover || rating);
         const isHovering = hover > 0 && index <= hover;
@@ -125,7 +128,6 @@ const Star = ({
     <label
       className="cursor-pointer relative w-8 h-8"
       onMouseEnter={() => setHover(index)}
-      onMouseLeave={() => setHover(0)}
       onClick={() => setRating(index)}
     >
       <input

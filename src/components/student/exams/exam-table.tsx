@@ -32,6 +32,7 @@ interface ExamTableProps {
   actionLabel: string;
   onAction?: (exam: Exam) => void;
   actionLinkPrefix?: string;
+  actionLinkSuffix?: string;
 }
 
 export function ExamTable({
@@ -39,6 +40,7 @@ export function ExamTable({
   actionLabel,
   onAction,
   actionLinkPrefix,
+  actionLinkSuffix = "",
 }: ExamTableProps) {
   const difficultyColor = {
     easy: "bg-emerald-500/10 text-emerald-500",
@@ -110,7 +112,9 @@ export function ExamTable({
               <TableCell className="text-right">
                 {actionLinkPrefix ? (
                   <Button variant="ghost" size="icon" asChild>
-                    <Link href={`${actionLinkPrefix}/${exam.id}`}>
+                    <Link
+                      href={`${actionLinkPrefix}/${exam.id}${actionLinkSuffix}`}
+                    >
                       {getActionIcon(actionLabel)}
                       <span className="sr-only">{actionLabel}</span>
                     </Link>

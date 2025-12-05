@@ -23,7 +23,7 @@ export function Providers({
       >
         <SidebarProvider defaultOpen={defaultOpen}>
           {children}
-          <Toaster />
+          <Toaster richColors />
         </SidebarProvider>
       </ThemeProvider>
     </NuqsAdapter>

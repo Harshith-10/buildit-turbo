@@ -14,6 +14,7 @@ import { difficultyEnum } from "./enums";
 
 export const problems = pgTable("problems", {
   id: uuid("id").defaultRandom().primaryKey(),
+  serialNumber: integer("serial_number").notNull().unique(),
   title: text("title").notNull(),
   slug: text("slug").notNull().unique(),
   difficulty: difficultyEnum("difficulty").notNull(),

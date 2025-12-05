@@ -1,10 +1,8 @@
 import { FilterBar } from "@/components/student/exams/filter-bar";
-import { ViewToggle } from "@/components/student/exams/view-toggle";
-import { ExamCard } from "@/components/student/exams/exam-card";
-import { ExamTable } from "@/components/student/exams/exam-table";
+import { ExamsView } from "@/components/student/exams/exams-view";
 import { db } from "@/db";
 import { exams } from "@/db/schema/exams";
-import { and, asc, desc, eq, ilike, inArray, or } from "drizzle-orm";
+import { SQL, and, asc, desc, eq, ilike, inArray, or } from "drizzle-orm";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -36,7 +34,10 @@ export default async function PastExamsPage(props: PageProps) {
 
   if (q) {
     whereConditions.push(
-      or(ilike(exams.title, `%${q}%`), ilike(exams.description, `%${q}%`)),
+      or(
+        ilike(exams.title, `%${q}%`),
+        ilike(exams.description, `%${q}%`),
+      ) as SQL<unknown>,
     );
   }
 
@@ -44,22 +45,19 @@ export default async function PastExamsPage(props: PageProps) {
     whereConditions.push(eq(exams.category, category));
   }
 
-  if (difficulty !== "all") {
-    // @ts-ignore
-    whereConditions.push(eq(exams.difficulty, difficulty));
+  if (difficulty !== "all" && ["easy", "medium", "hard"].includes(difficulty)) {
+    whereConditions.push(
+      eq(exams.difficulty, difficulty as "easy" | "medium" | "hard"),
+    );
   }
 
-  let orderBy;
+  let orderBy = desc(exams.createdAt);
   switch (sort) {
     case "oldest":
       orderBy = asc(exams.createdAt);
       break;
     case "expiry":
       orderBy = asc(exams.endTime);
-      break;
-    case "latest":
-    default:
-      orderBy = desc(exams.createdAt);
       break;
   }
 
@@ -81,43 +79,16 @@ export default async function PastExamsPage(props: PageProps) {
         <div className="flex-1">
           <FilterBar />
         </div>
-        <ViewToggle />
       </div>
 
-      {examsData.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center border rounded-lg bg-muted/10 border-dashed">
-          <p className="text-lg font-medium">No past exams found</p>
-          <p className="text-sm text-muted-foreground">
-            You haven't completed any exams yet.
-          </p>
-        </div>
-      ) : view === "table" ? (
-        <ExamTable
-          // @ts-ignore
-          exams={examsData}
-          actionLabel="View Results"
-          actionLinkPrefix="/student/exams"
-        />
-      ) : (
-        <div
-          className={
-            view === "grid"
-              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              : "flex flex-col gap-4"
-          }
-        >
-          {examsData.map((exam) => (
-            <ExamCard
-              key={exam.id}
-              // @ts-ignore
-              exam={exam}
-              viewMode={view}
-              actionLabel="View Results"
-              actionLink={`/student/exams/${exam.id}/results`}
-            />
-          ))}
-        </div>
-      )}
+      <ExamsView
+        // @ts-ignore
+        exams={examsData}
+        actionLabel="View Results"
+        actionLinkPrefix="/student/exams"
+        actionLinkSuffix="/results"
+        defaultView={view}
+      />
     </div>
   );
 }

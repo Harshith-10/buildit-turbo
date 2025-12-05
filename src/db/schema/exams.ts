@@ -66,6 +66,7 @@ export const userExamStatus = pgTable(
     passed: boolean("passed").default(false),
     startedAt: timestamp("started_at"),
     completedAt: timestamp("completed_at"),
+    rated: boolean("rated").default(false),
   },
   (t) => [primaryKey({ columns: [t.userId, t.examId] })],
 );

@@ -21,7 +21,17 @@ import { Input } from "@/components/ui/input";
 import { NotificationList } from "@/components/ui/notification-list";
 import StarRating from "../ui/star-rating";
 
-export function Header() {
+import type { Notification } from "@/types/notification";
+// We need to define the type or import it. The schema export is a table definition, not a type.
+// But Drizzle infers types. Let's define a local interface or import if available.
+// Actually, `getNotifications` returns an array of inferred type.
+// Let's define the prop type loosely or infer it.
+
+interface HeaderProps {
+  notifications?: Notification[];
+}
+
+export function Header({ notifications = [] }: HeaderProps) {
   const pathname = usePathname();
   const segments = pathname.split("/").filter((segment) => segment !== "");
 
@@ -62,7 +72,6 @@ export function Header() {
       </div>
 
       <div className="flex items-center gap-2">
-        <StarRating />
         {/* Search */}
         <div className="relative hidden lg:block">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -77,14 +86,16 @@ export function Header() {
           <PopoverTrigger asChild>
             <Button variant="ghost" size="icon" className="relative h-9 w-9">
               <Bell className="h-4 w-4" />
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">
-                3
-              </span>
+              {notifications.length > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">
+                  {notifications.length}
+                </span>
+              )}
               <span className="sr-only">Notifications</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent align="end" className="w-80">
-            <NotificationList />
+            <NotificationList notifications={notifications} />
           </PopoverContent>
         </Popover>
       </div>

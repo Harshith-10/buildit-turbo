@@ -1,7 +1,9 @@
 export interface Notification {
-  id: number;
+  id: string;
+  userId: string;
   title: string;
-  description: string;
-  time: string;
-  count?: number;
+  message: string;
+  type: "info" | "warning" | "success" | "error";
+  isRead: boolean;
+  createdAt: Date;
 }

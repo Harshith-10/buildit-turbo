@@ -18,7 +18,7 @@ export function FilterBar() {
     shallow: false,
   });
   const [sort, setSort] = useQueryState("sort", {
-    defaultValue: "latest",
+    defaultValue: "serial_asc",
     shallow: false,
   });
   const [category, setCategory] = useQueryState("category", {
@@ -29,6 +29,10 @@ export function FilterBar() {
     defaultValue: "all",
     shallow: false,
   });
+  const [status, setStatus] = useQueryState("status", {
+    defaultValue: "all",
+    shallow: false,
+  });
 
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -36,7 +40,7 @@ export function FilterBar() {
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
           type="search"
-          placeholder="Search exams..."
+          placeholder="Search problems..."
           className="pl-9"
           value={search}
           onChange={(e) => setSearch(e.target.value || null)}
@@ -49,10 +53,10 @@ export function FilterBar() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="development">Development</SelectItem>
-            <SelectItem value="design">Design</SelectItem>
-            <SelectItem value="business">Business</SelectItem>
-            <SelectItem value="marketing">Marketing</SelectItem>
+            <SelectItem value="algorithms">Algorithms</SelectItem>
+            <SelectItem value="data-structures">Data Structures</SelectItem>
+            <SelectItem value="database">Database</SelectItem>
+            <SelectItem value="system-design">System Design</SelectItem>
           </SelectContent>
         </Select>
 
@@ -68,14 +72,29 @@ export function FilterBar() {
           </SelectContent>
         </Select>
 
+        <Select value={status} onValueChange={setStatus}>
+          <SelectTrigger className="w-[130px]">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Status</SelectItem>
+            <SelectItem value="solved">Solved</SelectItem>
+            <SelectItem value="unsolved">Unsolved</SelectItem>
+          </SelectContent>
+        </Select>
+
         <Select value={sort} onValueChange={setSort}>
           <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="latest">Newest First</SelectItem>
+            <SelectItem value="serial_asc">Serial Number</SelectItem>
+            <SelectItem value="newest">Newest First</SelectItem>
             <SelectItem value="oldest">Oldest First</SelectItem>
-            <SelectItem value="expiry">Expiring Soon</SelectItem>
+            <SelectItem value="difficulty-asc">Difficulty (Easy)</SelectItem>
+            <SelectItem value="difficulty-desc">Difficulty (Hard)</SelectItem>
+            <SelectItem value="acceptance-desc">High Acceptance</SelectItem>
+            <SelectItem value="acceptance-asc">Low Acceptance</SelectItem>
           </SelectContent>
         </Select>
       </div>

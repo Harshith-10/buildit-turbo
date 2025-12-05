@@ -31,3 +31,12 @@ export const notificationTypeEnum = pgEnum("notification_type", [
   "success",
   "error",
 ]);
+
+export const programmingLanguageEnum = pgEnum("programming_language", [
+  "python",
+  "java",
+  "javascript",
+  "rust",
+  "c++",
+  "c",
+]);

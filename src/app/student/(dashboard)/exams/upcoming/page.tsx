@@ -1,10 +1,8 @@
 import { FilterBar } from "@/components/student/exams/filter-bar";
-import { ViewToggle } from "@/components/student/exams/view-toggle";
-import { ExamCard } from "@/components/student/exams/exam-card";
-import { ExamTable } from "@/components/student/exams/exam-table";
+import { ExamsView } from "@/components/student/exams/exams-view";
 import { db } from "@/db";
 import { exams } from "@/db/schema/exams";
-import { and, asc, desc, eq, gte, ilike, or } from "drizzle-orm";
+import { SQL, and, asc, desc, eq, ilike, or } from "drizzle-orm";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -34,7 +32,10 @@ export default async function UpcomingExamsPage(props: PageProps) {
 
   if (q) {
     whereConditions.push(
-      or(ilike(exams.title, `%${q}%`), ilike(exams.description, `%${q}%`)),
+      or(
+        ilike(exams.title, `%${q}%`),
+        ilike(exams.description, `%${q}%`),
+      ) as SQL<unknown>,
     );
   }
 
@@ -42,22 +43,19 @@ export default async function UpcomingExamsPage(props: PageProps) {
     whereConditions.push(eq(exams.category, category));
   }
 
-  if (difficulty !== "all") {
-    // @ts-ignore - difficulty enum type mismatch
-    whereConditions.push(eq(exams.difficulty, difficulty));
+  if (difficulty !== "all" && ["easy", "medium", "hard"].includes(difficulty)) {
+    whereConditions.push(
+      eq(exams.difficulty, difficulty as "easy" | "medium" | "hard"),
+    );
   }
 
-  let orderBy;
+  let orderBy = desc(exams.createdAt);
   switch (sort) {
     case "oldest":
       orderBy = asc(exams.createdAt);
       break;
     case "expiry":
       orderBy = asc(exams.scheduledDate);
-      break;
-    case "latest":
-    default:
-      orderBy = desc(exams.createdAt);
       break;
   }
 
@@ -79,43 +77,16 @@ export default async function UpcomingExamsPage(props: PageProps) {
         <div className="flex-1">
           <FilterBar />
         </div>
-        <ViewToggle />
       </div>
 
-      {examsData.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center border rounded-lg bg-muted/10 border-dashed">
-          <p className="text-lg font-medium">No upcoming exams found</p>
-          <p className="text-sm text-muted-foreground">
-            Try adjusting your filters or check back later.
-          </p>
-        </div>
-      ) : view === "table" ? (
-        <ExamTable
-          // @ts-ignore - type mismatch with DB result and component props
-          exams={examsData}
-          actionLabel="View Details"
-          actionLinkPrefix="/student/exams"
-        />
-      ) : (
-        <div
-          className={
-            view === "grid"
-              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              : "flex flex-col gap-4"
-          }
-        >
-          {examsData.map((exam) => (
-            <ExamCard
-              key={exam.id}
-              // @ts-ignore - type mismatch with DB result and component props
-              exam={exam}
-              viewMode={view}
-              actionLabel="View Details"
-              actionLink={`/student/exams/${exam.id}/onboarding`}
-            />
-          ))}
-        </div>
-      )}
+      <ExamsView
+        // @ts-ignore - type mismatch with DB result and component props
+        exams={examsData}
+        actionLabel="View Details"
+        actionLinkPrefix="/student/exams"
+        actionLinkSuffix="/onboarding"
+        defaultView={view}
+      />
     </div>
   );
 }
