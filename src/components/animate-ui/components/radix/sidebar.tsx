@@ -3,9 +3,9 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
 import type { Transition } from "motion/react";
-import { cookies } from "next/headers";
+
 import { Slot } from "radix-ui";
-import { use, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -68,7 +68,6 @@ function SidebarProvider({
 }: SidebarProviderProps) {
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = useState(false);
-  const { set: setCookie } = use(cookies());
 
   // This is the internal state of the sidebar.
   // We use openProp and setOpenProp for control from outside the component.
@@ -84,11 +83,12 @@ function SidebarProvider({
       }
 
       // This sets the cookie to keep the sidebar state.
-      setCookie(SIDEBAR_COOKIE_NAME, openState ? "open" : "closed", {
-        maxAge: SIDEBAR_COOKIE_MAX_AGE,
-      });
+      // biome-ignore lint/suspicious/noDocumentCookie: This is an intentional use of document.cookie
+      document.cookie = `${SIDEBAR_COOKIE_NAME}=${
+        openState ? "true" : "false"
+      }; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
     },
-    [setCookie, setOpenProp, open],
+    [setOpenProp, open],
   );
 
   // Helper to toggle the sidebar.

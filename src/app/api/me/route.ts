@@ -1,9 +1,9 @@
-import { auth } from "@/lib/auth";
-import { db } from "@/db";
-import { user } from "@/db/schema/auth";
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { db } from "@/db";
+import { user } from "@/db/schema/auth";
+import { auth } from "@/lib/auth";
 
 export async function GET() {
   const session = await auth.api.getSession({

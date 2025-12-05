@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import {
   BookOpen,
   ChevronsUpDown,
@@ -18,6 +19,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type React from "react";
+import { useEffect, useState } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -42,6 +44,7 @@ import {
 } from "@/components/animate-ui/primitives/radix/collapsible";
 import Logo from "@/components/common/logo";
 import User from "@/components/common/user";
+import type { User as UserType } from "@/types/auth";
 
 interface MenuItem {
   icon: React.ReactNode;
@@ -125,6 +128,13 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const { open } = useSidebar();
   const currentRoute = usePathname();
+  const [user, setUser] = useState<UserType | null>(null);
+
+  useEffect(() => {
+    axios.get("/api/me/fast").then((res) => {
+      setUser(res.data);
+    });
+  }, []);
 
   return (
     <Sidebar collapsible="icon">
@@ -174,14 +184,14 @@ export function AppSidebar({
               <div className="flex items-center gap-1.5 text-orange-500">
                 <Flame className="h-4 w-4" />
                 <span className="text-sm font-semibold">
-                  {currentUser.streak}
+                  {user?.streak || 0}
                 </span>
               </div>
               <div className="h-4 w-px bg-sidebar-border" />
               <div className="flex items-center gap-1.5 text-emerald-500">
                 <Target className="h-4 w-4" />
                 <span className="text-sm font-semibold">
-                  {currentUser.problemsSolved}/{currentUser.totalProblems}
+                  {user?.problemsSolved || 0}/{user?.totalProblems || 0}
                 </span>
               </div>
             </div>
@@ -208,7 +218,7 @@ export function AppSidebar({
         </SidebarMenu>
 
         <div className={`pb-2 ${open ? "px-2" : ""}`}>
-          <User size={open ? "default" : "sm"} />
+          <User size={open ? "default" : "small"} />
         </div>
       </SidebarFooter>
     </Sidebar>

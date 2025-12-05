@@ -32,11 +32,7 @@ import { signOut, useSession } from "@/lib/auth-client";
 import { Skeleton } from "../ui/skeleton";
 
 export default function User({ size }: { size: "default" | "small" }) {
-  const {
-    data: session,
-    isPending,
-    error,
-  } = useSession();
+  const { data: session, isPending, error } = useSession();
 
   const { theme, setTheme } = useTheme();
 
