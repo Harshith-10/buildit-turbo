@@ -1,0 +1,67 @@
+import {
+  boolean,
+  integer,
+  jsonb,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
+import { difficultyEnum, examStatusEnum } from "./enums";
+import { problems } from "./problems";
+import { users } from "./users";
+
+export const exams = pgTable("exams", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  duration: integer("duration").notNull(), // in minutes
+  totalQuestions: integer("total_questions").notNull(),
+  difficulty: difficultyEnum("difficulty").notNull(),
+  category: text("category").notNull(),
+
+  scheduledDate: timestamp("scheduled_date"),
+  startTime: timestamp("start_time"),
+  endTime: timestamp("end_time"),
+  status: examStatusEnum("status").default("draft").notNull(),
+
+  topics: jsonb("topics").$type<string[]>().default([]),
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const examQuestions = pgTable(
+  "exam_questions",
+  {
+    examId: uuid("exam_id")
+      .references(() => exams.id, { onDelete: "cascade" })
+      .notNull(),
+    problemId: uuid("problem_id")
+      .references(() => problems.id, { onDelete: "cascade" })
+      .notNull(),
+    order: integer("order").notNull(),
+    points: integer("points").default(10),
+  },
+  (t) => [primaryKey({ columns: [t.examId, t.problemId] })],
+);
+
+export const userExamStatus = pgTable(
+  "user_exam_status",
+  {
+    userId: uuid("user_id")
+      .references(() => users.id, { onDelete: "cascade" })
+      .notNull(),
+    examId: uuid("exam_id")
+      .references(() => exams.id, { onDelete: "cascade" })
+      .notNull(),
+    status: examStatusEnum("status").default("upcoming"),
+    score: integer("score"),
+    maxScore: integer("max_score"),
+    passed: boolean("passed").default(false),
+    startedAt: timestamp("started_at"),
+    completedAt: timestamp("completed_at"),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.examId] })],
+);
