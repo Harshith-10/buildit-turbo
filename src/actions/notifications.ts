@@ -1,11 +1,11 @@
 "use server";
 
-import { db } from "@/db";
-import { notifications } from "@/db/schema/notifications";
-import { auth } from "@/lib/auth";
 import { and, desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import { db } from "@/db";
+import { notifications } from "@/db/schema/notifications";
+import { auth } from "@/lib/auth";
 
 export async function getNotifications() {
   const session = await auth.api.getSession({

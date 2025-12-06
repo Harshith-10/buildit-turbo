@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +11,6 @@ import {
 } from "@/components/animate-ui/components/radix/dialog";
 import { Button } from "@/components/ui/button";
 import StarRating from "@/components/ui/star-rating";
-import { useState } from "react";
 
 interface RatingDialogProps {
   open: boolean;

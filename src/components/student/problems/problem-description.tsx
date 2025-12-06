@@ -8,6 +8,7 @@ interface ProblemDescriptionProps {
     description: string;
     examples: { input: string; output: string; explanation?: string }[];
     constraints: string[];
+    points?: number;
   };
 }
 
@@ -29,6 +30,11 @@ export function ProblemDescription({ problem }: ProblemDescriptionProps) {
           >
             {problem.difficulty}
           </Badge>
+          {problem.points !== undefined && (
+            <Badge variant="outline" className="ml-2">
+              {problem.points} Points
+            </Badge>
+          )}
         </div>
       </div>
 

@@ -1,5 +1,7 @@
 "use client";
 
+import { LayoutGrid, List, Table as TableIcon } from "lucide-react";
+import { useQueryState } from "nuqs";
 import {
   Tabs,
   TabsContent,
@@ -9,8 +11,6 @@ import {
 } from "@/components/animate-ui/components/radix/tabs";
 import { ExamCard } from "@/components/student/exams/exam-card";
 import { ExamTable } from "@/components/student/exams/exam-table";
-import { LayoutGrid, List, Table as TableIcon } from "lucide-react";
-import { useQueryState } from "nuqs";
 
 interface Exam {
   id: string;

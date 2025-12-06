@@ -1,21 +1,21 @@
 import "dotenv/config";
+import { and, eq } from "drizzle-orm";
 import { mockProblems } from "../src/components/dashboard/mock-data";
 import { db } from "../src/db";
 import {
+  collectionProblems,
+  collections,
+  examQuestions,
+  exams,
+  notifications,
   problems,
   problemTags,
-  exams,
-  user,
-  collections,
-  collectionProblems,
   resources,
-  notifications,
   submissions,
-  examQuestions,
+  user,
   userExamStatus,
   userProblemStatus,
 } from "../src/db/schema";
-import { and, eq } from "drizzle-orm";
 
 async function seed() {
   console.log("Seeding database...");
@@ -66,7 +66,7 @@ async function seed() {
         .replace(/ /g, "-")
         .replace(/[^\w-]/g, "");
 
-      let existingProblem = await db.query.problems.findFirst({
+      const existingProblem = await db.query.problems.findFirst({
         where: eq(problems.slug, slug),
       });
 

@@ -19,7 +19,7 @@ import { signUp } from "@/lib/auth-client";
 
 export default function SignUp() {
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [lastName, _setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [displayUsername, setDisplayUsername] = useState("");
   const [email, setEmail] = useState("");

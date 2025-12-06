@@ -1,5 +1,9 @@
 "use client";
 
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
 import { submitExamRating } from "@/app/actions/exam-actions";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,10 +15,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import StarRating from "@/components/ui/star-rating";
-import { ArrowLeft, CheckCircle2 } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
-import { toast } from "sonner";
 
 interface FinalizeViewProps {
   exam: {
@@ -38,7 +38,7 @@ export function FinalizeView({ exam, rated }: FinalizeViewProps) {
       await submitExamRating(exam.id, rating);
       setIsRated(true);
       toast.success("Thank you for your feedback!");
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to submit rating");
     } finally {
       setIsSubmitting(false);
@@ -75,9 +75,12 @@ export function FinalizeView({ exam, rated }: FinalizeViewProps) {
           {!isRated ? (
             <div className="mt-8 p-6 bg-muted/30 rounded-lg border border-dashed space-y-4">
               <div className="space-y-2">
-                <h3 className="font-medium text-foreground">Rate your experience!</h3>
+                <h3 className="font-medium text-foreground">
+                  Rate your experience!
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  How would you rate your experience with this exam or our platform?
+                  How would you rate your experience with this exam or our
+                  platform?
                 </p>
               </div>
               <div className="flex justify-center">

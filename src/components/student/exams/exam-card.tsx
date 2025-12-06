@@ -1,5 +1,7 @@
 "use client";
 
+import { Calendar, Clock, Trophy } from "lucide-react";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,8 +13,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { Calendar, Clock, Trophy } from "lucide-react";
-import Link from "next/link";
 
 interface Exam {
   id: string;

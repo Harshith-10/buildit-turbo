@@ -1,5 +1,7 @@
 "use client";
 
+import { ArrowRight, Eye, Play } from "lucide-react";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,8 +13,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { ArrowRight, Play, Eye } from "lucide-react";
-import Link from "next/link";
 
 interface Exam {
   id: string;

@@ -1,9 +1,9 @@
-import { FilterBar } from "@/components/student/exams/filter-bar";
+import { and, asc, desc, eq, ilike, or, type SQL } from "drizzle-orm";
+import type { Metadata } from "next";
 import { ExamsView } from "@/components/student/exams/exams-view";
+import { FilterBar } from "@/components/student/exams/filter-bar";
 import { db } from "@/db";
 import { exams } from "@/db/schema/exams";
-import { SQL, and, asc, desc, eq, ilike, or } from "drizzle-orm";
-import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Upcoming Exams | Student Portal",
@@ -80,7 +80,7 @@ export default async function UpcomingExamsPage(props: PageProps) {
       </div>
 
       <ExamsView
-        // @ts-ignore - type mismatch with DB result and component props
+        // @ts-expect-error - type mismatch with DB result and component props
         exams={examsData}
         actionLabel="View Details"
         actionLinkPrefix="/student/exams"

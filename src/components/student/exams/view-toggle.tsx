@@ -1,12 +1,12 @@
 "use client";
 
+import { LayoutGrid, List, Table as TableIcon } from "lucide-react";
+import { useQueryState } from "nuqs";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
 } from "@/components/animate-ui/components/radix/tabs";
-import { LayoutGrid, List, Table as TableIcon } from "lucide-react";
-import { useQueryState } from "nuqs";
 
 export function ViewToggle() {
   const [view, setView] = useQueryState("view", { defaultValue: "grid" });

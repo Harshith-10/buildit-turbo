@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import {
   PopoverClose as PopoverClosePrimitive,
   type PopoverCloseProps as PopoverClosePrimitiveProps,

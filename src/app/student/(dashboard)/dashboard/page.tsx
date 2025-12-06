@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import { CategoryProgress } from "@/components/dashboard/category-progress";
 import { DifficultyChart } from "@/components/dashboard/difficulty-chart";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
@@ -5,9 +6,7 @@ import { QuickLinks } from "@/components/dashboard/quick-links";
 import { RecentActivity } from "@/components/dashboard/recent-activity";
 import { StatsCards } from "@/components/dashboard/stats-cards";
 import { UpcomingExamsWidget } from "@/components/dashboard/upcoming-exams-widget";
-
 import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({

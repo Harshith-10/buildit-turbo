@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import { History, Library } from "lucide-react";
+import { Library } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   Card,

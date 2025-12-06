@@ -37,6 +37,9 @@ export const user = pgTable("user", {
   banned: boolean("banned"),
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),
+
+  // Security Questions
+  securityMetadata: text("security_metadata"), // JSON string of { questions: [{ question: string, answerHash: string }] }
 });
 
 export const session = pgTable(

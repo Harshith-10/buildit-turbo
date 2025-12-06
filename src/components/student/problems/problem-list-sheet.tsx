@@ -1,5 +1,8 @@
 "use client";
 
+import { List } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -7,9 +10,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { List } from "lucide-react";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface ProblemSummary {
@@ -17,6 +17,7 @@ interface ProblemSummary {
   title: string;
   difficulty: "easy" | "medium" | "hard";
   isSolved: boolean;
+  points?: number;
 }
 
 interface ProblemListSheetProps {
@@ -63,14 +64,21 @@ export function ProblemListSheet({
                   {problem.title}
                 </span>
               </div>
-              <span
-                className={cn(
-                  "text-xs font-medium capitalize",
-                  difficultyColor[problem.difficulty],
+              <div className="flex items-center gap-2">
+                {problem.points !== undefined && (
+                  <span className="text-xs font-medium text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                    {problem.points} pts
+                  </span>
                 )}
-              >
-                {problem.difficulty}
-              </span>
+                <span
+                  className={cn(
+                    "text-xs font-medium capitalize",
+                    difficultyColor[problem.difficulty],
+                  )}
+                >
+                  {problem.difficulty}
+                </span>
+              </div>
             </Link>
           ))}
         </div>

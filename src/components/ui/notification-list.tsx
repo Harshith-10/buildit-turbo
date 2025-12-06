@@ -1,12 +1,10 @@
 "use client";
 
+import { formatDistanceToNow } from "date-fns";
 import { ArrowUpRight, Check, X } from "lucide-react";
 import { motion, type Transition } from "motion/react";
 import { useState } from "react";
-import type { Notification } from "@/types/notification";
-import { formatDistanceToNow } from "date-fns";
 import { markAllAsRead, markAsRead } from "@/actions/notifications";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +12,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/animate-ui/components/radix/dialog";
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import type { Notification } from "@/types/notification";
 
 const transition: Transition = {
   type: "spring",

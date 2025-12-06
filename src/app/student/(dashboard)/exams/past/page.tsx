@@ -1,9 +1,9 @@
-import { FilterBar } from "@/components/student/exams/filter-bar";
+import { and, asc, desc, eq, ilike, inArray, or, type SQL } from "drizzle-orm";
+import type { Metadata } from "next";
 import { ExamsView } from "@/components/student/exams/exams-view";
+import { FilterBar } from "@/components/student/exams/filter-bar";
 import { db } from "@/db";
 import { exams } from "@/db/schema/exams";
-import { SQL, and, asc, desc, eq, ilike, inArray, or } from "drizzle-orm";
-import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Past Exams | Student Portal",
@@ -82,7 +82,7 @@ export default async function PastExamsPage(props: PageProps) {
       </div>
 
       <ExamsView
-        // @ts-ignore
+        // @ts-expect-error
         exams={examsData}
         actionLabel="View Results"
         actionLinkPrefix="/student/exams"

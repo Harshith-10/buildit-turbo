@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import {
   TabsContent as TabsContentPrimitive,
   type TabsContentProps as TabsContentPrimitiveProps,

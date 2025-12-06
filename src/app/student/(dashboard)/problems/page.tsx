@@ -1,13 +1,13 @@
+import { and, asc, count, desc, eq, ilike, or, type SQL } from "drizzle-orm";
+import type { Metadata } from "next";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { FilterBar } from "@/components/student/problems/filter-bar";
 import { PaginationControl } from "@/components/student/problems/pagination-control";
 import { ProblemsView } from "@/components/student/problems/problems-view";
 import { db } from "@/db";
-import { auth } from "@/lib/auth";
 import { problems, userProblemStatus } from "@/db/schema/problems";
-import { type SQL, and, asc, count, desc, eq, ilike, or } from "drizzle-orm";
-import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Problems | Student Portal",

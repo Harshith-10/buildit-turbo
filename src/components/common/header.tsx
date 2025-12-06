@@ -19,9 +19,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NotificationList } from "@/components/ui/notification-list";
-import StarRating from "../ui/star-rating";
-
 import type { Notification } from "@/types/notification";
+
 // We need to define the type or import it. The schema export is a table definition, not a type.
 // But Drizzle infers types. Let's define a local interface or import if available.
 // Actually, `getNotifications` returns an array of inferred type.

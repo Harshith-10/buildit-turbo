@@ -1,20 +1,21 @@
-import { auth } from "@/lib/auth";
-import { db } from "@/db";
-import { problems, userProblemStatus } from "@/db/schema/problems";
-import { eq, and, asc, gt, lt, desc, ne } from "drizzle-orm";
-import { notFound, redirect } from "next/navigation";
+import { and, asc, desc, eq, gt, lt, ne } from "drizzle-orm";
+import { ChevronLeft, ChevronRight, Play, Send } from "lucide-react";
 import { headers } from "next/headers";
+import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
+import { CodeEditorWrapper } from "@/components/student/problems/code-editor-wrapper";
 import { ProblemDescription } from "@/components/student/problems/problem-description";
 import { ProblemListSheet } from "@/components/student/problems/problem-list-sheet";
-import { CodeEditorWrapper } from "@/components/student/problems/code-editor-wrapper";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Play, Send } from "lucide-react";
-import Link from "next/link";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { db } from "@/db";
+import { problems } from "@/db/schema/problems";
+import { auth } from "@/lib/auth";
+import { ThemeTogglerButton } from "@/components/animate-ui/components/buttons/theme-toggler";
 
 interface PageProps {
   params: Promise<{
@@ -168,6 +169,7 @@ export default async function ProblemPage(props: PageProps) {
             <Send className="h-4 w-4" />
             Submit
           </Button>
+          
         </div>
       </header>
 
@@ -184,7 +186,7 @@ export default async function ProblemPage(props: PageProps) {
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={60} minSize={30}>
                 <CodeEditorWrapper
-                  starterCode={problem.starterCode["javascript"] || ""}
+                  starterCode={problem.starterCode.javascript || ""}
                 />
               </ResizablePanel>
 

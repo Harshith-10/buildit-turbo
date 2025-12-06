@@ -1,5 +1,7 @@
 "use client";
 
+import { Search } from "lucide-react";
+import { useQueryState } from "nuqs";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -8,8 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search } from "lucide-react";
-import { useQueryState } from "nuqs";
 
 export function FilterBar() {
   const [search, setSearch] = useQueryState("q", {

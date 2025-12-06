@@ -80,8 +80,8 @@ const sidebarSections: SidebarSection[] = [
   },
 ];
 
-import { Header } from "@/components/common/header";
 import { getNotifications } from "@/actions/notifications";
+import { Header } from "@/components/common/header";
 
 // ... existing imports ...
 

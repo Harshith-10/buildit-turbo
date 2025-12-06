@@ -1,5 +1,6 @@
 "use client";
 
+import { Code2 } from "lucide-react";
 import { useState } from "react";
 import { CodeEditor } from "@/components/student/problems/code-editor";
 import {
@@ -9,15 +10,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Code2 } from "lucide-react";
+import {
+  CodeEditorSettings,
+  type CodeEditorSettingsState,
+} from "./code-editor-settings";
 
 interface CodeEditorWrapperProps {
   starterCode: string;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-export function CodeEditorWrapper({ starterCode }: CodeEditorWrapperProps) {
-  const [code, setCode] = useState(starterCode);
+export function CodeEditorWrapper({
+  starterCode,
+  value,
+  onChange,
+}: CodeEditorWrapperProps) {
+  const [internalCode, setInternalCode] = useState(starterCode);
   const [language, setLanguage] = useState("javascript");
+  const [settings, setSettings] = useState<CodeEditorSettingsState>({
+    fontSize: 14,
+  });
+
+  const handleCodeChange = (newCode: string) => {
+    setInternalCode(newCode);
+    onChange?.(newCode);
+  };
+
+  const currentCode = value !== undefined ? value : internalCode;
 
   return (
     <div className="flex flex-col h-full">
@@ -28,22 +48,33 @@ export function CodeEditorWrapper({ starterCode }: CodeEditorWrapperProps) {
             Code Editor
           </span>
         </div>
-        <Select value={language} onValueChange={setLanguage}>
-          <SelectTrigger className="w-[120px] h-8 text-xs">
-            <SelectValue placeholder="Language" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="javascript">JavaScript</SelectItem>
-            <SelectItem value="python">Python</SelectItem>
-            <SelectItem value="java">Java</SelectItem>
-            <SelectItem value="cpp">C++</SelectItem>
-            <SelectItem value="c">C</SelectItem>
-            <SelectItem value="rust">Rust</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center">
+          <Select value={language} onValueChange={setLanguage}>
+            <SelectTrigger className="w-[120px] h-8 text-xs">
+              <SelectValue placeholder="Language" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="javascript">JavaScript</SelectItem>
+              <SelectItem value="python">Python</SelectItem>
+              <SelectItem value="java">Java</SelectItem>
+              <SelectItem value="cpp">C++</SelectItem>
+              <SelectItem value="c">C</SelectItem>
+              <SelectItem value="rust">Rust</SelectItem>
+            </SelectContent>
+          </Select>
+          <CodeEditorSettings
+            settings={settings}
+            onSettingsChange={setSettings}
+          />
+        </div>
       </div>
       <div className="flex-1 overflow-hidden">
-        <CodeEditor value={code} onChange={setCode} language={language} />
+        <CodeEditor
+          value={currentCode}
+          onChange={handleCodeChange}
+          language={language}
+          fontSize={settings.fontSize}
+        />
       </div>
     </div>
   );

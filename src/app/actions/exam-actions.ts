@@ -1,9 +1,9 @@
 "use server";
 
-import { db } from "@/db";
-import { exams } from "@/db/schema/exams";
 import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { db } from "@/db";
+import { exams } from "@/db/schema/exams";
 
 export async function submitExamRating(examId: string, rating: number) {
   if (rating < 1 || rating > 5) {
