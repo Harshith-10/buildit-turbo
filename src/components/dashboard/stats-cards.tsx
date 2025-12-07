@@ -1,29 +1,23 @@
-"use client";
-
-import axios from "axios";
 import { Flame, Target, TrendingUp, Trophy } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 import { Tilt, TiltContent } from "../animate-ui/primitives/effects/tilt";
 
-export function StatsCards() {
-  const [stats, setStats] = useState<{
-    problemsSolved: number;
-    totalProblems: number;
-    examsPassed: number;
-    totalExams: number;
-    streak: number;
-    rank: number;
-  } | null>(null);
+interface StatsData {
+  problemsSolved: number | null;
+  totalProblems: number | null;
+  examsPassed: number | null;
+  totalExams: number | null;
+  streak: number | null;
+  rank: number | null;
+}
 
-  useEffect(() => {
-    axios.get("/api/student/stats").then((response) => {
-      setStats(response.data);
-    });
-  }, []);
+interface StatsCardsProps {
+  stats: StatsData | null;
+}
 
+export function StatsCards({ stats }: StatsCardsProps) {
   if (!stats) {
     return null;
   }
@@ -31,31 +25,33 @@ export function StatsCards() {
   const statsData = [
     {
       title: "Problems Solved",
-      value: stats.problemsSolved,
-      total: stats.totalProblems.toString(),
+      value: stats.problemsSolved ?? 0,
+      total: (stats.totalProblems ?? 0).toString(),
       icon: Target,
       color: "text-emerald-500",
       bgColor: "bg-emerald-500/10",
       borderColor: "group-hover:border-emerald-500",
       progress:
-        stats.totalProblems > 0
-          ? (stats.problemsSolved / stats.totalProblems) * 100
+        (stats.totalProblems ?? 0) > 0
+          ? ((stats.problemsSolved ?? 0) / (stats.totalProblems ?? 1)) * 100
           : 0,
     },
     {
       title: "Exams Passed",
-      value: stats.examsPassed,
-      total: stats.totalExams.toString(),
+      value: stats.examsPassed ?? 0,
+      total: (stats.totalExams ?? 0).toString(),
       icon: Trophy,
       color: "text-amber-500",
       bgColor: "bg-amber-500/10",
       borderColor: "group-hover:border-amber-500",
       progress:
-        stats.totalExams > 0 ? (stats.examsPassed / stats.totalExams) * 100 : 0,
+        (stats.totalExams ?? 0) > 0
+          ? ((stats.examsPassed ?? 0) / (stats.totalExams ?? 1)) * 100
+          : 0,
     },
     {
       title: "Current Streak",
-      value: stats.streak,
+      value: stats.streak ?? 0,
       suffix: "days",
       icon: Flame,
       color: "text-orange-500",
@@ -64,7 +60,7 @@ export function StatsCards() {
     },
     {
       title: "Institute Rank",
-      value: `#${stats.rank}`,
+      value: `#${stats.rank ?? 0}`,
       total: "0",
       change: "",
       icon: TrendingUp,

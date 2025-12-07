@@ -1,8 +1,6 @@
 "use client";
 
-import axios from "axios";
 import { Library } from "lucide-react";
-import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -13,32 +11,17 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { EmptyOutline } from "../common/empty-outline";
 
-interface CategoryProgressProps {
-  categoryProgress?: {
-    category: string;
-    solved: number;
-    total: number;
-  }[];
+interface CategoryData {
+  category: string;
+  solved: number;
+  total: number;
 }
 
-export function CategoryProgress({
-  categoryProgress: initialData,
-}: CategoryProgressProps) {
-  const [categoryProgress, setCategoryProgress] = useState<
-    {
-      category: string;
-      solved: number;
-      total: number;
-    }[]
-  >(initialData || []);
+interface CategoryProgressProps {
+  data: CategoryData[];
+}
 
-  useEffect(() => {
-    if (!initialData) {
-      axios.get("/api/student/category-progress").then((response) => {
-        setCategoryProgress(response.data);
-      });
-    }
-  }, [initialData]);
+export function CategoryProgress({ data }: CategoryProgressProps) {
   return (
     <Card className="h-full">
       <CardHeader>
@@ -46,14 +29,14 @@ export function CategoryProgress({
         <CardDescription>Problems solved by category</CardDescription>
       </CardHeader>
       <CardContent className="h-full space-y-4">
-        {!categoryProgress.length && (
+        {!data.length && (
           <EmptyOutline
             title="No category progress"
             description="You have not solved any problems yet."
             icon={<Library />}
           />
         )}
-        {categoryProgress.map((cat) => (
+        {data.map((cat) => (
           <div key={cat.category} className="space-y-2">
             <div className="flex items-center justify-between text-sm">
               <span className="font-medium">{cat.category}</span>

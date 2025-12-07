@@ -23,7 +23,7 @@ export interface Exam {
   totalQuestions: number;
   difficulty: "easy" | "medium" | "hard";
   category: string;
-  scheduledDate?: string;
+  startDate?: string;
   startTime?: string;
   endTime?: string;
   status: "upcoming" | "live" | "completed";
@@ -1013,7 +1013,7 @@ export const mockExams: Exam[] = [
     totalQuestions: 15,
     difficulty: "easy",
     category: "Data Structures",
-    scheduledDate: "2025-06-10",
+    startDate: "2025-06-10",
     startTime: "09:00",
     endTime: "10:30",
     status: "upcoming",
@@ -1028,7 +1028,7 @@ export const mockExams: Exam[] = [
     totalQuestions: 20,
     difficulty: "medium",
     category: "Algorithms",
-    scheduledDate: "2025-06-12",
+    startDate: "2025-06-12",
     startTime: "14:00",
     endTime: "16:00",
     status: "upcoming",
@@ -1043,7 +1043,7 @@ export const mockExams: Exam[] = [
     totalQuestions: 12,
     difficulty: "hard",
     category: "Algorithms",
-    scheduledDate: "2025-06-15",
+    startDate: "2025-06-15",
     startTime: "10:00",
     endTime: "12:30",
     status: "upcoming",
@@ -1058,7 +1058,7 @@ export const mockExams: Exam[] = [
     totalQuestions: 18,
     difficulty: "medium",
     category: "Algorithms",
-    scheduledDate: "2025-06-18",
+    startDate: "2025-06-18",
     startTime: "09:00",
     endTime: "11:00",
     status: "upcoming",
@@ -1084,7 +1084,7 @@ export const mockExams: Exam[] = [
     totalQuestions: 20,
     difficulty: "medium",
     category: "Databases",
-    scheduledDate: "2025-05-20",
+    startDate: "2025-05-20",
     status: "completed",
     score: 85,
     maxScore: 100,
@@ -1099,7 +1099,7 @@ export const mockExams: Exam[] = [
     totalQuestions: 30,
     difficulty: "easy",
     category: "Web Development",
-    scheduledDate: "2025-05-15",
+    startDate: "2025-05-15",
     status: "completed",
     score: 92,
     maxScore: 100,
@@ -1114,7 +1114,7 @@ export const mockExams: Exam[] = [
     totalQuestions: 10,
     difficulty: "hard",
     category: "System Design",
-    scheduledDate: "2025-05-10",
+    startDate: "2025-05-10",
     status: "completed",
     score: 68,
     maxScore: 100,
@@ -1129,7 +1129,7 @@ export const mockExams: Exam[] = [
     totalQuestions: 25,
     difficulty: "medium",
     category: "Systems",
-    scheduledDate: "2025-05-05",
+    startDate: "2025-05-05",
     status: "completed",
     score: 78,
     maxScore: 100,
@@ -1144,7 +1144,7 @@ export const mockExams: Exam[] = [
     totalQuestions: 20,
     difficulty: "medium",
     category: "Networking",
-    scheduledDate: "2025-04-28",
+    startDate: "2025-04-28",
     status: "completed",
     score: 88,
     maxScore: 100,

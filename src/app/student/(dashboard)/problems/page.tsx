@@ -32,7 +32,7 @@ export default async function ProblemsPage(props: PageProps) {
     headers: await headers(),
   });
   if (!session?.user?.id) {
-    redirect("/auth/sign-in");
+    redirect("/auth");
   }
 
   const searchParams = await props.searchParams;

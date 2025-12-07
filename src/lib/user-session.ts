@@ -1,9 +1,7 @@
+import bcrypt from "bcryptjs";
+import { and, eq, gt, ne } from "drizzle-orm";
 import { db } from "@/db";
 import { session, user } from "@/db/schema/auth";
-import { eq, ne, and } from "drizzle-orm";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
-import bcrypt from "bcryptjs";
 
 export type SecurityQuestion = {
   question: string;
@@ -106,7 +104,7 @@ export async function verifySecurityAnswer(
 
 export async function getActiveSessions(userId: string) {
   return await db.query.session.findMany({
-    where: eq(session.userId, userId),
+    where: and(eq(session.userId, userId), gt(session.expiresAt, new Date())),
   });
 }
 

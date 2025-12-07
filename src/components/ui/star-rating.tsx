@@ -52,8 +52,9 @@ const StarRating = ({
   };
 
   return (
-    <div
-      className={cn("flex gap-[0.3rem]", className)}
+    <fieldset
+      aria-label="Star rating"
+      className={cn("flex gap-[0.3rem] border-0 p-0 m-0", className)}
       onMouseLeave={() => setHover(0)}
     >
       {[1, 2, 3, 4, 5].map((index) => {
@@ -73,7 +74,7 @@ const StarRating = ({
           />
         );
       })}
-    </div>
+    </fieldset>
   );
 };
 

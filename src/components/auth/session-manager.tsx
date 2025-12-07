@@ -1,10 +1,11 @@
 "use client";
 
-import { useSession } from "@/lib/auth-client";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { getSecurityStatus } from "@/actions/auth";
+import { useSession } from "@/lib/auth-client";
 import { SecurityQuestionsDialog } from "./security-questions-dialog";
 import { SessionConflictDialog } from "./session-conflict-dialog";
-import { usePathname } from "next/navigation";
 
 export function SessionManager() {
   const { data: session, isPending } = useSession();
@@ -21,10 +22,8 @@ export function SessionManager() {
 
     const checkSecurityStatus = async () => {
       try {
-        const res = await fetch("/api/auth/security");
-        if (!res.ok) return;
-
-        const data = await res.json();
+        const data = await getSecurityStatus();
+        if (!data) return;
 
         if (!data.hasSecurityQuestions) {
           setShowSecurityDialog(true);

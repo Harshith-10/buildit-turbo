@@ -1,4 +1,12 @@
 import { headers } from "next/headers";
+import {
+  getCategoryProgress,
+  getDifficultyDistribution,
+  getPerformanceData,
+  getRecentActivity,
+  getStats,
+  getUpcomingExams,
+} from "@/actions/student/dashboard";
 import { CategoryProgress } from "@/components/dashboard/category-progress";
 import { DifficultyChart } from "@/components/dashboard/difficulty-chart";
 import { PerformanceChart } from "@/components/dashboard/performance-chart";
@@ -32,6 +40,23 @@ export default async function DashboardPage() {
   ];
   const quote = quotes[Math.floor(Math.random() * quotes.length)];
 
+  // Fetch all dashboard data server-side
+  const [
+    stats,
+    performanceData,
+    recentActivity,
+    upcomingExams,
+    categoryProgress,
+    difficultyDistribution,
+  ] = await Promise.all([
+    getStats(),
+    getPerformanceData(),
+    getRecentActivity(),
+    getUpcomingExams(),
+    getCategoryProgress(),
+    getDifficultyDistribution(),
+  ]);
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 p-6 space-y-6">
@@ -43,26 +68,26 @@ export default async function DashboardPage() {
         </div>
 
         {/* Stats Overview */}
-        <StatsCards />
+        <StatsCards stats={stats} />
 
         <div className="grid grid-cols-5 w-full gap-6">
           <div className="col-span-3">
-            <PerformanceChart />
+            <PerformanceChart data={performanceData} />
           </div>
           <div className="col-span-2">
             <QuickLinks />
           </div>
           <div className="col-span-2">
-            <RecentActivity />
+            <RecentActivity submissions={recentActivity} />
           </div>
           <div className="col-span-3">
-            <UpcomingExamsWidget />
+            <UpcomingExamsWidget exams={upcomingExams} />
           </div>
           <div className="col-span-3">
-            <CategoryProgress />
+            <CategoryProgress data={categoryProgress} />
           </div>
           <div className="col-span-2">
-            <DifficultyChart />
+            <DifficultyChart data={difficultyDistribution} />
           </div>
         </div>
       </div>

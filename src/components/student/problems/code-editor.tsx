@@ -6,9 +6,9 @@ import { javascript } from "@codemirror/lang-javascript";
 import { python } from "@codemirror/lang-python";
 import { rust } from "@codemirror/lang-rust";
 import { vscodeLight } from "@uiw/codemirror-theme-vscode";
-import { customTheme } from "@/lib/codemirror-theme";
 import CodeMirror from "@uiw/react-codemirror";
 import { useCallback, useEffect, useState } from "react";
+import { customTheme } from "@/lib/codemirror-theme";
 
 interface CodeEditorProps {
   value: string;

@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { startExamSession } from "../actions";
 import { Loader2, Maximize2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { startExamSession } from "../../../../../../actions/student/exam";
 
 interface StartExamButtonProps {
   examId: string;
@@ -29,7 +29,7 @@ export function StartExamButton({ examId }: StartExamButtonProps) {
   const handleEnterFullscreen = async () => {
     try {
       await document.documentElement.requestFullscreen();
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to enter fullscreen mode");
     }
   };
@@ -46,7 +46,7 @@ export function StartExamButton({ examId }: StartExamButtonProps) {
       if (result.success) {
         router.push(`/student/exams/${examId}/take`);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to start exam session");
       setIsLoading(false);
     }

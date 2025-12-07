@@ -1,6 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Maximize2 } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
+import { logMalpractice } from "@/actions/student/exam";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -10,9 +13,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Maximize2 } from "lucide-react";
-import { toast } from "sonner";
-import { logMalpractice } from "@/app/student/(dashboard)/exams/[examId]/actions";
 
 interface ExamWrapperProps {
   children: React.ReactNode;
@@ -20,9 +20,27 @@ interface ExamWrapperProps {
   sessionId: string;
 }
 
-export function ExamWrapper({ children, examId, sessionId }: ExamWrapperProps) {
+export function ExamWrapper({
+  children,
+  examId: _examId,
+  sessionId,
+}: ExamWrapperProps) {
   const [isFullscreen, setIsFullscreen] = useState(true);
-  const [malpracticeCount, setMalpracticeCount] = useState(0);
+  const [_malpracticeCount, setMalpracticeCount] = useState(0);
+
+  const handleMalpractice = useCallback(
+    async (type: string) => {
+      setMalpracticeCount((prev) => prev + 1);
+      toast.error("Malpractice warning recorded!");
+
+      try {
+        await logMalpractice(sessionId, type);
+      } catch (error) {
+        console.error("Failed to log malpractice", error);
+      }
+    },
+    [sessionId],
+  );
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -51,23 +69,12 @@ export function ExamWrapper({ children, examId, sessionId }: ExamWrapperProps) {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, []);
-
-  const handleMalpractice = async (type: string) => {
-    setMalpracticeCount((prev) => prev + 1);
-    toast.error("Malpractice warning recorded!");
-
-    try {
-      await logMalpractice(sessionId, type);
-    } catch (error) {
-      console.error("Failed to log malpractice", error);
-    }
-  };
+  }, [handleMalpractice]);
 
   const handleReEnterFullscreen = async () => {
     try {
       await document.documentElement.requestFullscreen();
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to enter fullscreen mode");
     }
   };

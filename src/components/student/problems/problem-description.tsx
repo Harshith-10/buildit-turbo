@@ -44,7 +44,10 @@ export function ProblemDescription({ problem }: ProblemDescriptionProps) {
 
       <div className="flex flex-col gap-4">
         {problem.examples.map((example, index) => (
-          <div key={index} className="flex flex-col gap-2">
+          <div
+            key={`example-${example.input}-${example.output}`}
+            className="flex flex-col gap-2"
+          >
             <h3 className="font-semibold">Example {index + 1}:</h3>
             <div className="rounded-md bg-muted/50 p-4 font-mono text-sm">
               <div className="flex gap-2">
@@ -75,8 +78,8 @@ export function ProblemDescription({ problem }: ProblemDescriptionProps) {
       <div className="flex flex-col gap-2">
         <h3 className="font-semibold">Constraints:</h3>
         <ul className="list-disc pl-5 space-y-1">
-          {problem.constraints.map((constraint, index) => (
-            <li key={index} className="font-mono text-sm">
+          {problem.constraints.map((constraint) => (
+            <li key={constraint} className="font-mono text-sm">
               {constraint}
             </li>
           ))}

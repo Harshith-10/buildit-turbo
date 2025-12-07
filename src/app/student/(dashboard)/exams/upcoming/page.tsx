@@ -55,7 +55,7 @@ export default async function UpcomingExamsPage(props: PageProps) {
       orderBy = asc(exams.createdAt);
       break;
     case "expiry":
-      orderBy = asc(exams.scheduledDate);
+      orderBy = asc(exams.startDate);
       break;
   }
 
@@ -80,7 +80,6 @@ export default async function UpcomingExamsPage(props: PageProps) {
       </div>
 
       <ExamsView
-        // @ts-expect-error - type mismatch with DB result and component props
         exams={examsData}
         actionLabel="View Details"
         actionLinkPrefix="/student/exams"

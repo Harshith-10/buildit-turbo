@@ -14,14 +14,15 @@ import { ExamTable } from "@/components/student/exams/exam-table";
 
 interface Exam {
   id: string;
+  slug: string;
   title: string;
-  description: string;
+  description: string | null;
   duration: number;
   totalQuestions: number;
   difficulty: "easy" | "medium" | "hard";
   category: string;
-  scheduledDate?: Date | null;
-  status: "upcoming" | "ongoing" | "completed" | "missed";
+  startDate?: Date | null;
+  status: "draft" | "upcoming" | "live" | "completed" | "missed" | "ongoing";
   expiryDate?: Date | null;
 }
 
@@ -90,7 +91,7 @@ export function ExamsView({
                   actionLabel={actionLabel}
                   actionLink={
                     actionLinkPrefix
-                      ? `${actionLinkPrefix}/${exam.id}${actionLinkSuffix}`
+                      ? `${actionLinkPrefix}/${exam.slug}${actionLinkSuffix}`
                       : undefined
                   }
                   onAction={onAction}
@@ -117,7 +118,7 @@ export function ExamsView({
                   actionLabel={actionLabel}
                   actionLink={
                     actionLinkPrefix
-                      ? `${actionLinkPrefix}/${exam.id}${actionLinkSuffix}`
+                      ? `${actionLinkPrefix}/${exam.slug}${actionLinkSuffix}`
                       : undefined
                   }
                   onAction={onAction}

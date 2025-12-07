@@ -16,14 +16,15 @@ import { cn } from "@/lib/utils";
 
 interface Exam {
   id: string;
+  slug: string;
   title: string;
-  description: string;
+  description: string | null;
   duration: number;
   totalQuestions: number;
   difficulty: "easy" | "medium" | "hard";
   category: string;
-  scheduledDate?: Date | null;
-  status: "upcoming" | "ongoing" | "completed" | "missed";
+  startDate?: Date | null;
+  status: "draft" | "upcoming" | "live" | "completed" | "missed" | "ongoing";
   expiryDate?: Date | null;
 }
 
@@ -50,8 +51,10 @@ export function ExamCard({
     hard: "bg-rose-500/10 text-rose-500 hover:bg-rose-500/20",
   };
 
-  const statusColor = {
+  const statusColor: Record<string, string> = {
+    draft: "bg-gray-500/10 text-gray-500",
     upcoming: "bg-blue-500/10 text-blue-500",
+    live: "bg-green-500/10 text-green-500",
     ongoing: "bg-green-500/10 text-green-500",
     completed: "bg-gray-500/10 text-gray-500",
     missed: "bg-red-500/10 text-red-500",
@@ -90,10 +93,10 @@ export function ExamCard({
               <Trophy className="h-4 w-4" />
               <span>{exam.totalQuestions} Questions</span>
             </div>
-            {exam.scheduledDate && (
+            {exam.startDate && (
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                <span>{exam.scheduledDate.toLocaleDateString()}</span>
+                <span>{exam.startDate.toLocaleDateString()}</span>
               </div>
             )}
           </div>
@@ -147,10 +150,10 @@ export function ExamCard({
             <Trophy className="h-4 w-4" />
             <span>{exam.totalQuestions} Questions</span>
           </div>
-          {exam.scheduledDate && (
+          {exam.startDate && (
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
-              <span>{exam.scheduledDate.toLocaleDateString()}</span>
+              <span>{exam.startDate.toLocaleDateString()}</span>
             </div>
           )}
         </div>

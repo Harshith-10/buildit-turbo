@@ -1,9 +1,7 @@
 "use client";
 
-import axios from "axios";
 import { ArrowRight, Calendar, Clock, PencilLine } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { EmptyOutline } from "@/components/common/empty-outline";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Exam } from "./mock-data";
 
 const difficultyColors = {
   easy: "bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20",
@@ -22,23 +19,21 @@ const difficultyColors = {
   hard: "bg-red-500/10 text-red-500 hover:bg-red-500/20",
 };
 
-interface UpcomingExamsWidgetProps {
-  exams?: Exam[];
+interface UpcomingExam {
+  id: string;
+  title: string;
+  description: string | null;
+  difficulty: "easy" | "medium" | "hard";
+  duration: number;
+  startDate: Date | null;
+  status: string | null;
 }
 
-export function UpcomingExamsWidget({
-  exams: initialExams,
-}: UpcomingExamsWidgetProps) {
-  const [exams, setExams] = useState<Exam[]>(initialExams || []);
+interface UpcomingExamsWidgetProps {
+  exams: UpcomingExam[];
+}
 
-  useEffect(() => {
-    if (!initialExams) {
-      axios.get("/api/student/upcoming-exams").then((response) => {
-        setExams(response.data);
-      });
-    }
-  }, [initialExams]);
-
+export function UpcomingExamsWidget({ exams }: UpcomingExamsWidgetProps) {
   const upcomingExams = exams
     .filter((e) => e.status === "upcoming")
     .slice(0, 3);
@@ -51,7 +46,7 @@ export function UpcomingExamsWidget({
           <CardDescription>Your scheduled exams</CardDescription>
         </div>
         <Button variant="ghost" size="sm" asChild>
-          <Link href="/exams/upcoming">
+          <Link href="/student/exams/upcoming">
             View all <ArrowRight className="ml-1 h-4 w-4" />
           </Link>
         </Button>
@@ -82,7 +77,9 @@ export function UpcomingExamsWidget({
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3.5 w-3.5" />
-                  {exam.scheduledDate}
+                  {exam.startDate
+                    ? new Date(exam.startDate).toLocaleDateString()
+                    : "TBD"}
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock className="h-3.5 w-3.5" />

@@ -1,11 +1,10 @@
-import { auth } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { db } from "@/db";
-import { examSessions, exams } from "@/db/schema/exams";
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { db } from "@/db";
+import { examSessions, exams } from "@/db/schema/exams";
+import { auth } from "@/lib/auth";
 import { StartExamButton } from "./start-exam-button";
 
 interface PageProps {
@@ -21,11 +20,11 @@ export default async function ExamOnboardingPage(props: PageProps) {
   });
 
   if (!session) {
-    redirect("/auth/sign-in");
+    redirect("/auth");
   }
 
   const exam = await db.query.exams.findFirst({
-    where: eq(exams.id, params.examId),
+    where: eq(exams.slug, params.examId),
   });
 
   if (!exam) {
@@ -36,7 +35,7 @@ export default async function ExamOnboardingPage(props: PageProps) {
   const existingSession = await db.query.examSessions.findFirst({
     where: and(
       eq(examSessions.userId, session.user.id),
-      eq(examSessions.examId, params.examId),
+      eq(examSessions.examId, exam.id),
     ),
   });
 

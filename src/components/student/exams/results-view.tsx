@@ -4,7 +4,7 @@ import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
-import { submitExamRating } from "@/app/actions/exam-actions";
+import { submitExamRating } from "@/actions/student/exams";
 import { Button } from "@/components/ui/button";
 import {
   Card,

@@ -1,5 +1,5 @@
 import { tags as t } from "@lezer/highlight";
-import { createTheme, type CreateThemeOptions } from "@uiw/codemirror-themes";
+import { type CreateThemeOptions, createTheme } from "@uiw/codemirror-themes";
 
 export const defaultSettingsCustom: CreateThemeOptions["settings"] = {
   background: "var(--background)",

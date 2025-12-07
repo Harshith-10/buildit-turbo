@@ -9,7 +9,6 @@ export default async function proxy(request: NextRequest) {
   const studentRoutes = ["/student", "/api/student"];
   const authPages = ["/auth"];
   const authApiRoutes = ["/api/auth"];
-  const protectedApiRoutes = ["/api/me"];
 
   const isRoute = (routes: string[]) =>
     routes.some((route) => pathName.startsWith(route));
@@ -19,15 +18,17 @@ export default async function proxy(request: NextRequest) {
   const isStudentRoute = isRoute(studentRoutes);
   const isAuthPage = isRoute(authPages);
   const isAuthApiRoute = isRoute(authApiRoutes);
-  const isProtectedApiRoute = isRoute(protectedApiRoutes);
 
   // Allow public API routes immediately
   if (isAuthApiRoute) {
     return NextResponse.next();
   }
 
-  const isProtectedRoute =
-    isAdminRoute || isFacultyRoute || isStudentRoute || isProtectedApiRoute;
+  const isProtectedRoute = isAdminRoute || isFacultyRoute || isStudentRoute;
+
+  if (pathName === "/") {
+    return NextResponse.redirect(new URL("/auth", request.url));
+  }
 
   // If it's not a protected route and not an auth page, skip session check
   if (!isProtectedRoute && !isAuthPage) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useQueryStates } from "nuqs";
 import {
   Pagination,
   PaginationContent,
@@ -10,6 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { problemsSearchParams } from "@/lib/search-params";
 
 interface PaginationControlProps {
   totalCount: number;
@@ -22,13 +23,18 @@ export function PaginationControl({
   pageSize,
   currentPage,
 }: PaginationControlProps) {
-  const searchParams = useSearchParams();
+  const [searchParams] = useQueryStates(problemsSearchParams);
   const totalPages = Math.ceil(totalCount / pageSize);
 
   if (totalPages <= 1) return null;
 
   const createPageURL = (pageNumber: number | string) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams();
+    Object.entries(searchParams).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== "") {
+        params.set(key, String(value));
+      }
+    });
     params.set("page", pageNumber.toString());
     return `?${params.toString()}`;
   };

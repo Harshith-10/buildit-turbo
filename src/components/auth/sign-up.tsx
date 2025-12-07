@@ -178,10 +178,12 @@ export default function SignUp() {
                   onRequest: () => {
                     setLoading(true);
                   },
-                  onError: (ctx: any) => {
+                  onError: (ctx: { error: { message: string } }) => {
                     toast.error(ctx.error.message);
                   },
-                  onSuccess: async (ctx: any) => {
+                  onSuccess: async (ctx: {
+                    data?: { user?: { role?: string } };
+                  }) => {
                     const role = ctx.data?.user?.role;
                     if (role === "admin") {
                       redirect("/admin/dashboard");

@@ -57,7 +57,7 @@ export default async function OngoingExamsPage(props: PageProps) {
       break;
     case "expiry":
       // Sort by end time / expiry
-      orderBy = asc(exams.endTime);
+      orderBy = asc(exams.endDate);
       break;
   }
 
@@ -82,7 +82,6 @@ export default async function OngoingExamsPage(props: PageProps) {
       </div>
 
       <ExamsView
-        // @ts-expect-error
         exams={examsData}
         actionLabel="Start Exam"
         actionLinkPrefix="/student/exams"

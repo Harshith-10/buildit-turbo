@@ -57,7 +57,7 @@ export default async function PastExamsPage(props: PageProps) {
       orderBy = asc(exams.createdAt);
       break;
     case "expiry":
-      orderBy = asc(exams.endTime);
+      orderBy = asc(exams.endDate);
       break;
   }
 
@@ -82,7 +82,6 @@ export default async function PastExamsPage(props: PageProps) {
       </div>
 
       <ExamsView
-        // @ts-expect-error
         exams={examsData}
         actionLabel="View Results"
         actionLinkPrefix="/student/exams"

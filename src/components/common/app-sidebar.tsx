@@ -1,6 +1,5 @@
 "use client";
 
-import axios from "axios";
 import {
   BookOpen,
   ChevronsUpDown,
@@ -20,6 +19,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type React from "react";
 import { useEffect, useState } from "react";
+import { getUserFull, type UserFullData } from "@/actions/user";
 import {
   Sidebar,
   SidebarContent,
@@ -44,7 +44,6 @@ import {
 } from "@/components/animate-ui/primitives/radix/collapsible";
 import Logo from "@/components/common/logo";
 import User from "@/components/common/user";
-import type { User as UserType } from "@/types/auth";
 
 interface MenuItem {
   icon: React.ReactNode;
@@ -65,7 +64,7 @@ const mainItems: MenuItem[] = [
   {
     icon: <LayoutDashboard className="h-4 w-4" />,
     label: "Dashboard",
-    href: "/dashboard",
+    href: "/student/dashboard",
   },
   {
     icon: <FileText className="h-4 w-4" />,
@@ -75,24 +74,45 @@ const mainItems: MenuItem[] = [
       {
         icon: <Play className="h-4 w-4" />,
         label: "Take Exam",
-        href: "/exams/take-exam",
+        href: "/student/exams/take-exam",
       },
       {
         icon: <Clock className="h-4 w-4" />,
         label: "Upcoming",
-        href: "/exams/upcoming",
+        href: "/student/exams/upcoming",
       },
       {
         icon: <History className="h-4 w-4" />,
         label: "Past Exams",
-        href: "/exams/past",
+        href: "/student/exams/past",
+      },
+    ],
+  },
+  {
+    icon: <BookOpen className="h-4 w-4" />,
+    label: "Collections",
+    submenu: [
+      {
+        icon: <FileText className="h-4 w-4" />,
+        label: "Your Collections",
+        href: "/student/collections/personal",
+      },
+      {
+        icon: <Code2 className="h-4 w-4" />,
+        label: "Practice Sheets",
+        href: "/student/collections/practice-sheets",
+      },
+      {
+        icon: <Target className="h-4 w-4" />,
+        label: "Companies",
+        href: "/student/collections/companies",
       },
     ],
   },
   {
     icon: <Code2 className="h-4 w-4" />,
     label: "Practice",
-    href: "/practice",
+    href: "/student/problems",
   },
 ];
 
@@ -105,12 +125,12 @@ const exploreItems: MenuItem[] = [
   {
     icon: <Trophy className="h-4 w-4" />,
     label: "Leaderboard",
-    href: "/leaderboard",
+    href: "/student/leaderboard",
   },
   {
     icon: <BookOpen className="h-4 w-4" />,
     label: "Resources",
-    href: "/resources",
+    href: "/student/resources",
   },
 ];
 
@@ -128,11 +148,11 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const { open } = useSidebar();
   const currentRoute = usePathname();
-  const [user, setUser] = useState<UserType | null>(null);
+  const [user, setUser] = useState<UserFullData | null>(null);
 
   useEffect(() => {
-    axios.get("/api/me/fast").then((res) => {
-      setUser(res.data);
+    getUserFull().then((data) => {
+      setUser(data);
     });
   }, []);
 
@@ -144,7 +164,9 @@ export function AppSidebar({
             <Logo className="h-8 w-8" />
             <Fade delay={100} className="w-full flex items-center gap-2">
               <div className="flex-1 flex flex-col">
-                <h1 className="text-xl font-bold flex-1">BuildIT</h1>
+                <h1 className="text-xl font-bold text-foreground flex-1">
+                  BuildIT
+                </h1>
               </div>
               <SidebarTrigger />
             </Fade>
@@ -178,7 +200,7 @@ export function AppSidebar({
 
       <SidebarFooter className="border-t border-sidebar-border">
         {/* Stats Row */}
-        {open && (
+        {open && user?.role === "student" && (
           <Fade delay={100}>
             <div className="flex items-center justify-center gap-4 rounded-lg bg-sidebar-accent/50 p-3 mx-2 my-2">
               <div className="flex items-center gap-1.5 text-orange-500">
@@ -201,7 +223,7 @@ export function AppSidebar({
         <SidebarMenu className={`transition-all ${open ? "px-2" : ""}`}>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Support" asChild>
-              <Link href="/support">
+              <Link href="/student/dashboard">
                 <LifeBuoy className="h-4 w-4" />
                 <span>Support</span>
               </Link>
@@ -209,7 +231,7 @@ export function AppSidebar({
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton tooltip="Settings" asChild>
-              <Link href="/settings">
+              <Link href="/student/dashboard">
                 <Settings className="h-4 w-4" />
                 <span>Settings</span>
               </Link>

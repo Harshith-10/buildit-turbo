@@ -16,14 +16,15 @@ import { cn } from "@/lib/utils";
 
 interface Exam {
   id: string;
+  slug: string;
   title: string;
-  description: string;
+  description: string | null;
   duration: number;
   totalQuestions: number;
   difficulty: "easy" | "medium" | "hard";
   category: string;
-  scheduledDate?: Date | null;
-  status: "upcoming" | "ongoing" | "completed" | "missed";
+  startDate?: Date | null;
+  status: "draft" | "upcoming" | "live" | "completed" | "missed" | "ongoing";
   expiryDate?: Date | null;
 }
 
@@ -48,8 +49,10 @@ export function ExamTable({
     hard: "bg-rose-500/10 text-rose-500",
   };
 
-  const statusColor = {
+  const statusColor: Record<string, string> = {
+    draft: "bg-gray-500/10 text-gray-500",
     upcoming: "bg-blue-500/10 text-blue-500",
+    live: "bg-green-500/10 text-green-500",
     ongoing: "bg-green-500/10 text-green-500",
     completed: "bg-gray-500/10 text-gray-500",
     missed: "bg-red-500/10 text-red-500",
@@ -94,9 +97,7 @@ export function ExamTable({
               <TableCell>{exam.duration} mins</TableCell>
               <TableCell>{exam.totalQuestions}</TableCell>
               <TableCell>
-                {exam.scheduledDate
-                  ? exam.scheduledDate.toLocaleDateString()
-                  : "-"}
+                {exam.startDate ? exam.startDate.toLocaleDateString() : "-"}
               </TableCell>
               <TableCell>
                 <Badge
@@ -113,7 +114,7 @@ export function ExamTable({
                 {actionLinkPrefix ? (
                   <Button variant="ghost" size="icon" asChild>
                     <Link
-                      href={`${actionLinkPrefix}/${exam.id}${actionLinkSuffix}`}
+                      href={`${actionLinkPrefix}/${exam.slug}${actionLinkSuffix}`}
                     >
                       {getActionIcon(actionLabel)}
                       <span className="sr-only">{actionLabel}</span>

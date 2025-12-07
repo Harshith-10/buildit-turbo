@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Clock } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface ExamTimerProps {
   finishTime: Date;

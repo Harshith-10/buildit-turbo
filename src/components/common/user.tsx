@@ -9,7 +9,7 @@ import {
   UserIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import {
@@ -34,10 +34,17 @@ import { Skeleton } from "../ui/skeleton";
 export default function User({ size }: { size: "default" | "small" }) {
   const { data: session, isPending, error } = useSession();
 
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
 
   const handleLogout = async () => {
-    signOut();
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/auth");
+        },
+      },
+    });
   };
 
   if (isPending || !session?.user) {
@@ -45,8 +52,8 @@ export default function User({ size }: { size: "default" | "small" }) {
   }
 
   if (error) {
-    toast.error("Failed to load session. Redirecting to login...");
-    redirect("/auth/login");
+    toast.error("Failed to load session. Redirecting to auth...");
+    redirect("/auth");
   }
 
   const user = session.user;
@@ -71,12 +78,12 @@ export default function User({ size }: { size: "default" | "small" }) {
                     .join("")}
                 </AvatarFallback>
               </Avatar>
-              <Fade delay={100} className="flex-1">
+              <Fade delay={100} className="flex-1 min-w-0">
                 <Slide
                   direction="right"
-                  className="flex-1 flex items-center gap-2"
+                  className="flex-1 flex items-center gap-2 min-w-0"
                 >
-                  <div className="flex-1 flex flex-col overflow-hidden text-left">
+                  <div className="flex-1 flex flex-col overflow-hidden text-left min-w-0">
                     <p className="font-medium truncate text-sm">{user.name}</p>
                     <p className="text-muted-foreground text-xs truncate">
                       {user.email}
@@ -128,7 +135,7 @@ export default function User({ size }: { size: "default" | "small" }) {
                 .join("")}
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col overflow-hidden text-left">
+          <div className="flex flex-col overflow-hidden text-left min-w-0">
             <p className="font-medium truncate text-sm">{user.name}</p>
             <p className="text-muted-foreground text-xs truncate">
               {user.email}
@@ -137,13 +144,13 @@ export default function User({ size }: { size: "default" | "small" }) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link href="/settings" className="flex items-center gap-2">
+          <Link href="/student/dashboard" className="flex items-center gap-2">
             <UserIcon className="h-4 w-4" />
             <span className="ml-2">Profile</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="/settings" className="flex items-center gap-2">
+          <Link href="/student/dashboard" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
             <span className="ml-2">Settings</span>
           </Link>
@@ -183,8 +190,11 @@ function UserSkeleton({ size }: { size: "default" | "small" }) {
           <Avatar className="h-10 w-10 z-50">
             <Skeleton className="h-10 w-10" />
           </Avatar>
-          <Fade delay={100} className="flex-1">
-            <Slide direction="right" className="flex-1 flex items-center gap-2">
+          <Fade delay={100} className="flex-1 min-w-0">
+            <Slide
+              direction="right"
+              className="flex-1 flex items-center gap-2 min-w-0"
+            >
               <div className="flex-1 flex flex-col overflow-hidden text-left">
                 <Skeleton className="h-4 w-20" />
                 <Skeleton className="h-3 w-16" />

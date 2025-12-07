@@ -26,7 +26,7 @@ const quickLinks = [
   {
     title: "Take Exam",
     description: "Start a new exam",
-    href: "/exams/take-exam",
+    href: "/student/exams/take-exam",
     icon: Play,
     color: "text-emerald-500",
     bgColor: "bg-emerald-500/10 group-hover:bg-emerald-500/20",
@@ -34,7 +34,7 @@ const quickLinks = [
   {
     title: "Practice",
     description: "Solve problems",
-    href: "/practice",
+    href: "/student/problems",
     icon: Code2,
     color: "text-blue-500",
     bgColor: "bg-blue-500/10 group-hover:bg-blue-500/20",
@@ -42,7 +42,7 @@ const quickLinks = [
   {
     title: "Past Exams",
     description: "Review results",
-    href: "/exams/past",
+    href: "/student/exams/past",
     icon: History,
     color: "text-amber-500",
     bgColor: "bg-amber-500/10 group-hover:bg-amber-500/20",
@@ -50,7 +50,7 @@ const quickLinks = [
   {
     title: "Leaderboard",
     description: "View rankings",
-    href: "/leaderboard",
+    href: "/student/leaderboard",
     icon: BarChart3,
     color: "text-purple-500",
     bgColor: "bg-purple-500/10 group-hover:bg-purple-500/20",
@@ -58,7 +58,7 @@ const quickLinks = [
   {
     title: "Bookmarks",
     description: "Saved problems",
-    href: "/practice?bookmarked=true",
+    href: "/student/problems?bookmarked=true",
     icon: Bookmark,
     color: "text-pink-500",
     bgColor: "bg-pink-500/10 group-hover:bg-pink-500/20",
@@ -66,7 +66,7 @@ const quickLinks = [
   {
     title: "Study Guide",
     description: "Learning resources",
-    href: "/resources",
+    href: "/student/resources",
     icon: BookOpen,
     color: "text-cyan-500",
     bgColor: "bg-cyan-500/10 group-hover:bg-cyan-500/20",

@@ -1,19 +1,20 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
+import { verifyAndTerminateSessions } from "@/actions/auth";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 
 interface SessionConflictDialogProps {
@@ -54,15 +55,10 @@ export function SessionConflictDialog({
         answer: ans,
       }));
 
-      const res = await fetch("/api/auth/security", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers: formattedAnswers }),
-      });
+      const result = await verifyAndTerminateSessions(formattedAnswers);
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Incorrect answers");
+      if (!result.success) {
+        throw new Error(result.error || "Incorrect answers");
       }
 
       toast.success("Other sessions terminated successfully!");
@@ -80,7 +76,7 @@ export function SessionConflictDialog({
 
   const handleLogout = async () => {
     await signOut();
-    router.push("/auth/sign-in");
+    router.push("/auth");
   };
 
   return (
@@ -101,7 +97,7 @@ export function SessionConflictDialog({
         </DialogHeader>
         <div className="grid gap-4 py-4">
           {questions.map((q, i) => (
-            <div key={`conflict-q-${i}`} className="grid gap-2">
+            <div key={q} className="grid gap-2">
               <Label htmlFor={`answer-${i}`}>{q}</Label>
               <Input
                 id={`answer-${i}`}

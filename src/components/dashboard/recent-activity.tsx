@@ -1,6 +1,5 @@
 "use client";
 
-import axios from "axios";
 import {
   AlertCircle,
   CheckCircle2,
@@ -8,7 +7,6 @@ import {
   History,
   XCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { EmptyOutline } from "@/components/common/empty-outline";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -60,41 +58,22 @@ const statusConfig: Record<
   },
 };
 
-interface RecentActivityProps {
-  initialSubmissions?: {
-    id: string;
-    problemId: string;
-    status: string;
-    language: string;
-    runtime: string;
-    memory: string;
-    timestamp: string;
-    problemTitle: string;
-  }[];
+interface Submission {
+  id: string;
+  problemId: string;
+  status: string;
+  language: string;
+  runtime: string;
+  memory: string;
+  timestamp: string;
+  problemTitle: string;
 }
 
-export function RecentActivity({ initialSubmissions }: RecentActivityProps) {
-  const [submissions, setSubmissions] = useState<
-    {
-      id: string;
-      problemId: string;
-      status: string;
-      language: string;
-      runtime: string;
-      memory: string;
-      timestamp: string;
-      problemTitle: string;
-    }[]
-  >(initialSubmissions || []);
+interface RecentActivityProps {
+  submissions: Submission[];
+}
 
-  useEffect(() => {
-    if (!initialSubmissions) {
-      axios.get("/api/student/recent-activity").then((response) => {
-        setSubmissions(response.data);
-      });
-    }
-  }, [initialSubmissions]);
-
+export function RecentActivity({ submissions }: RecentActivityProps) {
   return (
     <Card>
       <CardHeader>

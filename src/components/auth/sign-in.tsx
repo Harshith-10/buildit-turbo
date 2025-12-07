@@ -2,7 +2,7 @@
 
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -16,9 +16,10 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signIn } from "@/lib/auth-client";
+import { getSession, signIn } from "@/lib/auth-client";
 
 export default function SignIn() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -90,17 +91,28 @@ export default function SignIn() {
                 onResponse: () => {
                   setLoading(false);
                 },
-                onSuccess: async (ctx: any) => {
-                  const role = ctx.data?.user?.role;
+                onSuccess: async (ctx: {
+                  data?: { user?: { role?: string } };
+                }) => {
+                  let role = ctx.data?.user?.role;
+                  console.log("User role from response:", role); // Debugging
+
+                  if (!role) {
+                    console.log("Role missing, fetching session...");
+                    const session = await getSession();
+                    role = session?.data?.user?.role ?? undefined;
+                    console.log("User role from session:", role);
+                  }
+
                   if (role === "admin") {
-                    redirect("/admin/dashboard");
+                    router.push("/admin/dashboard");
                   } else if (role === "faculty") {
-                    redirect("/faculty/dashboard");
+                    router.push("/faculty/dashboard");
                   } else {
-                    redirect("/student/dashboard");
+                    router.push("/student/dashboard");
                   }
                 },
-                onError: (ctx: any) => {
+                onError: (ctx: { error: { message: string } }) => {
                   toast.error(ctx.error.message);
                 },
               };

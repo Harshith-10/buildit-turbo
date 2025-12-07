@@ -4,7 +4,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ArrowUpRight, Check, X } from "lucide-react";
 import { motion, type Transition } from "motion/react";
 import { useState } from "react";
-import { markAllAsRead, markAsRead } from "@/actions/notifications";
+import { markAllAsRead, markAsRead } from "@/actions/student/notifications";
 import {
   Dialog,
   DialogContent,
@@ -82,7 +82,7 @@ function NotificationList({ notifications = [] }: NotificationListProps) {
           displayedNotifications.map((notification, i) => (
             <motion.div
               key={notification.id}
-              className="bg-secondary rounded-md px-4 py-2 shadow-sm hover:shadow-lg transition-shadow duration-200 relative group"
+              className="bg-card rounded-md px-4 py-2 shadow-sm hover:shadow-lg transition-shadow duration-200 relative group"
               variants={getCardVariants(i)}
               transition={transition}
               style={{

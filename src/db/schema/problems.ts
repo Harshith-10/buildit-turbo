@@ -28,18 +28,21 @@ export const problems = pgTable("problems", {
 
   acceptance: real("acceptance").default(0),
   submissions: integer("submissions").default(0),
+  likes: integer("likes").default(0),
 
   examples: jsonb("examples")
     .$type<{ input: string; output: string; explanation?: string }[]>()
     .notNull(),
   constraints: jsonb("constraints").$type<string[]>().notNull(),
   starterCode: jsonb("starter_code").$type<Record<string, string>>().notNull(),
+  driverCode: jsonb("driver_code").$type<Record<string, string>>().notNull(),
   testCases: jsonb("test_cases")
     .$type<{ id: number; input: string; expected: string }[]>()
     .notNull(),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  deletedAt: timestamp("deleted_at"),
 });
 
 export const problemTags = pgTable(
@@ -51,6 +54,19 @@ export const problemTags = pgTable(
     tag: text("tag").notNull(),
   },
   (t) => [primaryKey({ columns: [t.problemId, t.tag] })],
+);
+
+export const problemLikes = pgTable(
+  "problem_likes",
+  {
+    problemId: uuid("problem_id")
+      .references(() => problems.id, { onDelete: "cascade" })
+      .notNull(),
+    userId: text("user_id")
+      .references(() => user.id, { onDelete: "cascade" })
+      .notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.problemId, t.userId] })],
 );
 
 export const userProblemStatus = pgTable(

@@ -27,7 +27,6 @@ const sidebarSections: SidebarSection[] = [
       {
         label: "Exams",
         icon: <NotebookPen />,
-        defaultOpen: true,
         submenu: [
           {
             label: "Take Exam",
@@ -58,8 +57,24 @@ const sidebarSections: SidebarSection[] = [
       },
       {
         label: "Collections",
-        href: "/student/collections",
         icon: <Library />,
+        submenu: [
+          {
+            label: "Personal",
+            href: "/student/collections/personal",
+            icon: <PencilLine />,
+          },
+          {
+            label: "Practice Sheets",
+            href: "/student/collections/practice-sheets",
+            icon: <Calendar />,
+          },
+          {
+            label: "Companies",
+            href: "/student/collections/companies",
+            icon: <History />,
+          },
+        ],
       },
     ],
   },
@@ -80,7 +95,7 @@ const sidebarSections: SidebarSection[] = [
   },
 ];
 
-import { getNotifications } from "@/actions/notifications";
+import { getNotifications } from "@/actions/student/notifications";
 import { Header } from "@/components/common/header";
 
 // ... existing imports ...

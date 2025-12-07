@@ -1,13 +1,13 @@
-import { auth } from "@/lib/auth";
+import { and, eq } from "drizzle-orm";
+import { CheckCircle } from "lucide-react";
+import { headers } from "next/headers";
+import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/db";
 import { examSessions, exams } from "@/db/schema/exams";
-import { and, eq } from "drizzle-orm";
-import { headers } from "next/headers";
-import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
-import { CheckCircle } from "lucide-react";
+import { auth } from "@/lib/auth";
 
 interface PageProps {
   params: Promise<{
@@ -22,11 +22,11 @@ export default async function ExamFinalizePage(props: PageProps) {
   });
 
   if (!session) {
-    redirect("/auth/sign-in");
+    redirect("/auth");
   }
 
   const exam = await db.query.exams.findFirst({
-    where: eq(exams.id, params.examId),
+    where: eq(exams.slug, params.examId),
   });
 
   if (!exam) {
@@ -36,12 +36,12 @@ export default async function ExamFinalizePage(props: PageProps) {
   const examSession = await db.query.examSessions.findFirst({
     where: and(
       eq(examSessions.userId, session.user.id),
-      eq(examSessions.examId, params.examId),
+      eq(examSessions.examId, exam.id),
     ),
   });
 
   if (!examSession) {
-    redirect(`/student/exams/${params.examId}/onboarding`);
+    redirect(`/student/exams/${exam.slug}/onboarding`);
   }
 
   if (
@@ -49,7 +49,7 @@ export default async function ExamFinalizePage(props: PageProps) {
     examSession.terminationType !== "terminated"
   ) {
     // If not finished, redirect back to exam
-    redirect(`/student/exams/${params.examId}/take`);
+    redirect(`/student/exams/${exam.slug}/take`);
   }
 
   return (
@@ -94,10 +94,10 @@ export default async function ExamFinalizePage(props: PageProps) {
 
           <div className="flex justify-center gap-4">
             <Button asChild variant="outline">
-              <Link href="/student/exams">Back to Exams</Link>
+              <Link href="/student/exams/take-exam">Back to Exams</Link>
             </Button>
             <Button asChild>
-              <Link href={`/student/exams/${params.examId}/results`}>
+              <Link href={`/student/exams/${exam.slug}/results`}>
                 View Results
               </Link>
             </Button>

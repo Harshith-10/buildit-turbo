@@ -40,3 +40,9 @@ export const programmingLanguageEnum = pgEnum("programming_language", [
   "c++",
   "c",
 ]);
+
+export const collectionTypeEnum = pgEnum("collection_type", [
+  "personal",
+  "practice_sheet",
+  "company",
+]);

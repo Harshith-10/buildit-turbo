@@ -15,7 +15,6 @@ import {
 import { db } from "@/db";
 import { problems } from "@/db/schema/problems";
 import { auth } from "@/lib/auth";
-import { ThemeTogglerButton } from "@/components/animate-ui/components/buttons/theme-toggler";
 
 interface PageProps {
   params: Promise<{
@@ -28,7 +27,7 @@ export default async function ProblemPage(props: PageProps) {
     headers: await headers(),
   });
   if (!session?.user?.id) {
-    redirect("/auth/sign-in");
+    redirect("/auth");
   }
 
   const params = await props.params;
@@ -169,7 +168,6 @@ export default async function ProblemPage(props: PageProps) {
             <Send className="h-4 w-4" />
             Submit
           </Button>
-          
         </div>
       </header>
 
