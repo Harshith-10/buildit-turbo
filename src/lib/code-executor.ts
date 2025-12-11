@@ -1,17 +1,20 @@
 import type {
   ExecutionResult,
-  TurboSubmitRequest,
-  TurboSubmitResponse,
-  TurboTestCase,
+  AgentTestCase,
+  AgentExecuteRequest,
+  AgentExecuteResponse,
+  AgentJobStatus,
+  AgentSubmitResponse,
+  TurboTestResult,
 } from "@/types/execution";
 
-const TURBO_API_URL = process.env.TURBO_API_URL || "http://localhost:3001";
+const AGENT_API_URL = process.env.AGENT_API_URL || "http://localhost:8910";
 const USE_LOCAL_EXECUTION = process.env.USE_LOCAL_EXECUTION === "true";
 
 /**
- * Execute code using the Turbo distributed execution system OR local execution
+ * Execute code using the BuildIT Agent OR local execution
  * 
- * @param userId - Student/user identifier
+ * @param userId - Student/user identifier (not sent to agent)
  * @param language - Programming language ("java", "python", "rust", "javascript")
  * @param code - Source code to execute
  * @param testCases - Array of test cases with input/expected output
@@ -49,28 +52,30 @@ export async function executeCode(
     }
   }
 
-  // Use Turbo API for distributed execution
+  // Use BuildIT Agent for execution
   try {
-    // Convert test cases to Turbo format
-    const turboTestCases: TurboTestCase[] = testCases.map((tc) => ({
+    // Convert test cases to Agent format
+    const agentTestCases: AgentTestCase[] = testCases.map((tc) => ({
       id: tc.id,
       input: tc.input,
-      output: tc.expected,
+      expected: tc.expected,
+      timeout_ms: 5000, // 5 second timeout per test case
     }));
 
-    // Prepare request payload
-    const payload: TurboSubmitRequest = {
-      user_id: userId,
+    // Prepare request payload (agent doesn't need user_id)
+    const payload: AgentExecuteRequest = {
       language: language.toLowerCase(),
       code,
-      testcases: turboTestCases,
+      testcases: agentTestCases,
     };
 
-    // Submit to Turbo API
+    console.log("[executeCode] Submitting to BuildIT Agent...");
+
+    // Submit to Agent API
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout * 1000);
 
-    const response = await fetch(`${TURBO_API_URL}/submit`, {
+    const submitResponse = await fetch(`${AGENT_API_URL}/execute`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -81,51 +86,28 @@ export async function executeCode(
 
     clearTimeout(timeoutId);
 
-    // Handle non-200 responses (worker errors)
-    if (!response.ok) {
-      const errorText = await response.text();
+    // Handle non-200 responses
+    if (!submitResponse.ok) {
+      const errorData = await submitResponse.json().catch(() => ({ error: "Unknown error" }));
       return {
         success: false,
         passed: false,
         totalTests: testCases.length,
         passedTests: 0,
         results: [],
-        systemError: `HTTP ${response.status}: ${errorText}`,
+        systemError: `Agent error: ${errorData.error || "Failed to submit code"}`,
       };
     }
 
-    // Parse successful response
-    const data: TurboSubmitResponse = await response.json();
+    // Get job ID
+    const submitData: AgentSubmitResponse = await submitResponse.json();
+    console.log("[executeCode] Job submitted, ID:", submitData.id);
 
-    // Check for compilation errors
-    if (data.error) {
-      return {
-        success: true,
-        passed: false,
-        totalTests: testCases.length,
-        passedTests: 0,
-        results: [],
-        compilationError: data.error,
-      };
-    }
+    // Poll for job completion
+    const result = await pollJobStatus(submitData.id, timeout);
 
-    // Calculate pass/fail statistics
-    const passedTests = data.results.filter((r) => r.passed).length;
-
-    // Extract execution time (use max time from all test cases)
-    const maxTime = data.results.reduce((max, r) => {
-      const time = parseExecutionTime(r.time);
-      return time > max ? time : max;
-    }, 0);
-
-    return {
-      success: true,
-      passed: data.passed,
-      totalTests: testCases.length,
-      passedTests,
-      results: data.results,
-      executionTime: `${maxTime}ms`,
-    };
+    // Convert agent response to our format
+    return mapAgentResponseToExecutionResult(result, testCases.length);
   } catch (error) {
     // Handle timeout or network errors
     if (error instanceof Error) {
@@ -162,48 +144,167 @@ export async function executeCode(
 }
 
 /**
- * Parse execution time string to milliseconds
- * @param timeStr - Time string like "0ms", "50ms", "1s"
+ * Poll job status until completion
  */
-function parseExecutionTime(timeStr: string): number {
-  if (!timeStr) return 0;
+async function pollJobStatus(
+  jobId: number,
+  timeoutSeconds: number
+): Promise<AgentExecuteResponse> {
+  const startTime = Date.now();
+  const maxTime = timeoutSeconds * 1000;
 
-  const match = timeStr.match(/^(\d+(?:\.\d+)?)(ms|s)?$/);
-  if (!match) return 0;
+  while (true) {
+    // Check timeout
+    if (Date.now() - startTime > maxTime) {
+      throw new Error("Job polling timeout");
+    }
 
-  const value = Number.parseFloat(match[1]);
-  const unit = match[2];
+    try {
+      const response = await fetch(`${AGENT_API_URL}/status/${jobId}`, {
+        method: "GET",
+        signal: AbortSignal.timeout(5000),
+      });
 
-  if (unit === "s") return value * 1000;
-  return value; // default to ms
-}
+      if (!response.ok) {
+        throw new Error(`Failed to get job status: ${response.status}`);
+      }
 
-/**
- * Check if Turbo execution system is available
- * @returns true if system is healthy
- */
-export async function checkTurboHealth(): Promise<boolean> {
-  try {
-    const response = await fetch(`${TURBO_API_URL}/health`, {
-      method: "GET",
-      signal: AbortSignal.timeout(5000),
-    });
+      const status: AgentJobStatus = await response.json();
+      console.log("[pollJobStatus] Status:", status.status);
 
-    return response.ok && (await response.text()).trim() === "OK";
-  } catch {
-    return false;
+      if (status.status === "completed" && status.result) {
+        return status.result;
+      }
+
+      if (status.status === "error") {
+        throw new Error(status.error || "Job execution failed");
+      }
+
+      // Still running, wait before polling again
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("timeout")) {
+        continue; // Retry on timeout
+      }
+      throw error;
+    }
   }
 }
 
 /**
- * Map internal language names to Turbo language identifiers
+ * Map BuildIT Agent response to our ExecutionResult format
+ */
+function mapAgentResponseToExecutionResult(
+  agentResponse: AgentExecuteResponse,
+  totalTests: number
+): ExecutionResult {
+  console.log("[mapAgentResponse] Full agent response:", JSON.stringify(agentResponse, null, 2));
+  
+  // Check for compilation errors (only if status explicitly says compile_error)
+  // Note: compiled=false is normal for interpreted languages like Python
+  if (agentResponse.status === "compile_error") {
+    console.log("[mapAgentResponse] Compilation error detected");
+    
+    // Try to extract error details from message or results
+    let errorMessage = agentResponse.message || "";
+    
+    if (!errorMessage && agentResponse.results.length > 0) {
+      // Check if there's stderr in the first result
+      const firstResult = agentResponse.results[0];
+      if (firstResult.stderr) {
+        errorMessage = firstResult.stderr;
+      }
+    }
+    
+    return {
+      success: true,
+      passed: false,
+      totalTests,
+      passedTests: 0,
+      results: [],
+      compilationError: errorMessage || "Compilation failed (no details provided)",
+      executionTime: `${agentResponse.total_duration_ms}ms`,
+    };
+  }
+
+  // Handle other errors
+  if (agentResponse.status === "error" || agentResponse.status === "unsupported_language") {
+    console.log("[mapAgentResponse] System error detected:", agentResponse.status);
+    return {
+      success: false,
+      passed: false,
+      totalTests,
+      passedTests: 0,
+      results: [],
+      systemError: agentResponse.message || `Execution error: ${agentResponse.status}`,
+      executionTime: `${agentResponse.total_duration_ms}ms`,
+    };
+  }
+
+  // Convert agent results to our format
+  const results: TurboTestResult[] = agentResponse.results.map((caseResult) => {
+    const actualOutput = caseResult.stdout.trim();
+    const expectedOutput = caseResult.expected;
+    
+    // Do our own comparison after trimming (agent compares before trimming)
+    // This handles Windows line endings (\r\n) and other whitespace issues
+    const ourPassed = expectedOutput 
+      ? actualOutput === expectedOutput.trim()
+      : caseResult.passed;
+    
+    // Debug logging for mismatches between agent and our comparison
+    if (caseResult.passed !== ourPassed) {
+      console.log(`[Test ${caseResult.id}] Agent said: ${caseResult.passed}, We say: ${ourPassed}`);
+      console.log('  Expected:', JSON.stringify(expectedOutput));
+      console.log('  Actual (trimmed):', JSON.stringify(actualOutput));
+      console.log('  Stdout (raw):', JSON.stringify(caseResult.stdout));
+    }
+    
+    return {
+      id: caseResult.id,
+      worker_id: "buildit-agent",
+      passed: ourPassed, // Use our comparison result, not the agent's
+      actual_output: actualOutput,
+      expected_output: expectedOutput,
+      error: caseResult.stderr || (caseResult.timed_out ? "Timeout" : ""),
+      time: `${caseResult.duration_ms}ms`,
+      memory: `${(caseResult.memory_kb / 1024).toFixed(2)}MB`,
+    };
+  });
+
+  const passedTests = results.filter((r) => r.passed).length;
+  const allPassed = passedTests === totalTests;
+
+  console.log("[mapAgentResponse] Converted results:", {
+    totalTests,
+    passedTests,
+    allPassed,
+    resultCount: results.length
+  });
+
+  return {
+    success: true,
+    passed: allPassed,
+    totalTests,
+    passedTests,
+    results,
+    executionTime: `${agentResponse.total_duration_ms}ms`,
+  };
+}
+
+/**
+ * Map internal language names to agent language identifiers
  */
 export function mapLanguageToTurbo(language: string): string {
   const languageMap: Record<string, string> = {
     java: "java",
     python: "python",
     python3: "python",
+    javascript: "javascript",
+    js: "javascript",
     rust: "rust",
+    cpp: "cpp",
+    "c++": "cpp",
   };
 
   return languageMap[language.toLowerCase()] || language.toLowerCase();

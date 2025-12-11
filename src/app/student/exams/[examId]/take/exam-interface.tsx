@@ -49,6 +49,7 @@ interface ExamQuestion {
   starterCode: Record<string, string> | null;
   examples?: { input: string; output: string; explanation?: string }[];
   constraints?: string[];
+  testCases?: { id: number; input: string; expected: string; hidden?: boolean }[];
 }
 
 interface ExamInterfaceProps {
@@ -68,14 +69,35 @@ export function ExamInterface({
 }: ExamInterfaceProps) {
   const router = useRouter();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [code, setCode] = useState("");
   const [language, setLanguage] = useState("javascript");
+  
+  const currentQuestion = questions[currentQuestionIndex];
+  
+  // Initialize code with starter code for current question and language
+  const [code, setCode] = useState(
+    currentQuestion?.starterCode?.[language] || currentQuestion?.starterCode?.javascript || ""
+  );
+  
+  // Update code when language or question changes
+  const handleLanguageChange = (newLanguage: string) => {
+    setLanguage(newLanguage);
+    // Load starter code for the new language
+    const newStarterCode = currentQuestion?.starterCode?.[newLanguage] || currentQuestion?.starterCode?.javascript || "";
+    setCode(newStarterCode);
+  };
+
+  const handleQuestionChange = (newIndex: number) => {
+    setCurrentQuestionIndex(newIndex);
+    const newQuestion = questions[newIndex];
+    // Load starter code for the new question
+    const newStarterCode = newQuestion?.starterCode?.[language] || newQuestion?.starterCode?.javascript || "";
+    setCode(newStarterCode);
+  };
   
   // Use the reusable code execution hook
   const { isRunning, isSubmitting, testResult, runTests, submitCode } =
     useCodeExecution();
 
-  const currentQuestion = questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
   const isFirstQuestion = currentQuestionIndex === 0;
 
@@ -98,13 +120,13 @@ export function ExamInterface({
 
   const handleNext = () => {
     if (!isLastQuestion) {
-      setCurrentQuestionIndex((prev) => prev + 1);
+      handleQuestionChange(currentQuestionIndex + 1);
     }
   };
 
   const handlePrev = () => {
     if (!isFirstQuestion) {
-      setCurrentQuestionIndex((prev) => prev - 1);
+      handleQuestionChange(currentQuestionIndex - 1);
     }
   };
 
@@ -216,6 +238,7 @@ export function ExamInterface({
                 points: currentQuestion.points ?? undefined,
                 examples: currentQuestion.examples || [],
                 constraints: currentQuestion.constraints || [],
+                testCases: currentQuestion.testCases || [],
               }}
             />
           </ResizablePanel>
@@ -230,7 +253,7 @@ export function ExamInterface({
                   value={code}
                   onChange={setCode}
                   language={language}
-                  onLanguageChange={setLanguage}
+                  onLanguageChange={handleLanguageChange}
                 />
               </ResizablePanel>
 

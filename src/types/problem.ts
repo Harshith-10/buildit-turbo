@@ -6,8 +6,8 @@ export interface Problem {
   difficulty: string;
   category: string;
   description: string;
-  acceptance: number;
-  submissions: number;
+  acceptance: number | null;
+  submissions: number | null;
   examples: string[];
   constraints: string[];
   starterCode: {
@@ -19,7 +19,7 @@ export interface Problem {
     language: string;
   }[];
   testCases: TestCase[];
-  creatorId: string;
+  creatorId: string | null;
 }
 
 export interface ProblemTag {

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import { checkAgentHealth } from "@/lib/agent-health";
 import type { ExecutionResult } from "@/types/execution";
 
 interface UseCodeExecutionOptions {
@@ -27,6 +28,20 @@ export function useCodeExecution(options: UseCodeExecutionOptions = {}) {
     setTestResult(null);
 
     try {
+      // Check if agent is running (only if not using local execution)
+      const useLocalExecution = process.env.NEXT_PUBLIC_USE_LOCAL_EXECUTION === "true";
+      
+      if (!useLocalExecution) {
+        const isAgentHealthy = await checkAgentHealth();
+        if (!isAgentHealthy) {
+          toast.error("⚠️ BuildIT Agent is not running. Please start the agent and try again.", {
+            duration: 5000,
+          });
+          setIsRunning(false);
+          return;
+        }
+      }
+
       const result = await runAction();
       setTestResult(result);
 
@@ -78,6 +93,20 @@ export function useCodeExecution(options: UseCodeExecutionOptions = {}) {
     setTestResult(null);
 
     try {
+      // Check if agent is running (only if not using local execution)
+      const useLocalExecution = process.env.NEXT_PUBLIC_USE_LOCAL_EXECUTION === "true";
+      
+      if (!useLocalExecution) {
+        const isAgentHealthy = await checkAgentHealth();
+        if (!isAgentHealthy) {
+          toast.error("⚠️ BuildIT Agent is not running. Please start the agent and try again.", {
+            duration: 5000,
+          });
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       const result = await submitAction();
 
       if (result.executionResult) {

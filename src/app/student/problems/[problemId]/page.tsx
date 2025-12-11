@@ -99,7 +99,8 @@ export default async function ProblemPage(props: PageProps) {
 
   return (
     <ProblemInterface
-      problem={problem}
+      
+    problem={problem}
       neighborProblems={neighborProblems}
       prevProblemId={prevProblemId}
       nextProblemId={nextProblemId}

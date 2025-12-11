@@ -24,11 +24,11 @@ interface Problem {
   difficulty: "easy" | "medium" | "hard";
   category: string;
   description: string;
-  creatorId: string;
+  creatorId: string | null;
   isPublic: boolean;
-  acceptance: number;
-  submissions: number;
-  likes: number;
+  acceptance: number | null;
+  submissions: number | null;
+  likes: number | null;
   examples: { input: string; output: string; explanation?: string }[];
   constraints: string[];
   starterCode: Record<string, string>;
@@ -60,8 +60,18 @@ export function ProblemInterface({
   prevProblemId,
   nextProblemId,
 }: ProblemInterfaceProps) {
-  const [code, setCode] = useState("");
   const [language, setLanguage] = useState("javascript");
+  const [code, setCode] = useState(
+    problem.starterCode[language] || problem.starterCode.javascript || ""
+  );
+
+  // Update code when language changes
+  const handleLanguageChange = (newLanguage: string) => {
+    setLanguage(newLanguage);
+    // Load starter code for the new language
+    const newStarterCode = problem.starterCode[newLanguage] || problem.starterCode.javascript || "";
+    setCode(newStarterCode);
+  };
 
   // Use the reusable code execution hook
   const { isRunning, isSubmitting, testResult, runTests, submitCode } =
@@ -170,7 +180,7 @@ export function ProblemInterface({
                   value={code}
                   onChange={setCode}
                   language={language}
-                  onLanguageChange={setLanguage}
+                  onLanguageChange={handleLanguageChange}
                 />
               </ResizablePanel>
 

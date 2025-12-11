@@ -20,11 +20,11 @@ async function checkFacultyAccess() {
   return session.user;
 }
 
-export type CreateQuestionInput = typeof problems.$inferInsert & {
+export type CreateQuestionInput = Omit<typeof problems.$inferInsert, 'serialNumber' | 'creatorId'> & {
   tags?: string[];
 };
 
-export type UpdateQuestionInput = Partial<typeof problems.$inferInsert> & {
+export type UpdateQuestionInput = Partial<Omit<typeof problems.$inferInsert, 'serialNumber' | 'creatorId'>> & {
   tags?: string[];
 };
 

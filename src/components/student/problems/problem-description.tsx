@@ -8,6 +8,7 @@ interface ProblemDescriptionProps {
     description: string;
     examples: { input: string; output: string; explanation?: string }[];
     constraints: string[];
+    testCases?: { id: number; input: string; expected: string; hidden?: boolean }[];
     points?: number;
   };
 }
@@ -95,6 +96,35 @@ export function ProblemDescription({ problem }: ProblemDescriptionProps) {
           </div>
         ))}
       </div>
+
+      {problem.testCases && problem.testCases.filter(tc => !tc.hidden).length > 0 && (
+        <div className="flex flex-col gap-2">
+          <h3 className="font-semibold">Sample Test Cases:</h3>
+          <div className="space-y-2">
+            {problem.testCases
+              .filter(tc => !tc.hidden)
+              .map((testCase) => (
+                <div
+                  key={testCase.id}
+                  className="rounded-md bg-muted/30 p-3 font-mono text-xs space-y-1"
+                >
+                  <div className="flex gap-2">
+                    <span className="font-semibold text-muted-foreground min-w-[60px]">
+                      Input:
+                    </span>
+                    <span className="text-blue-400">{testCase.input}</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <span className="font-semibold text-muted-foreground min-w-[60px]">
+                      Expected:
+                    </span>
+                    <span className="text-green-400">{testCase.expected}</span>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col gap-2">
         <h3 className="font-semibold">Constraints:</h3>

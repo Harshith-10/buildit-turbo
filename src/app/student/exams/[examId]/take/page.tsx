@@ -105,6 +105,9 @@ export default async function ExamTakePage(props: PageProps) {
       difficulty: problems.difficulty,
       description: problems.description,
       starterCode: problems.starterCode,
+      examples: problems.examples,
+      constraints: problems.constraints,
+      testCases: problems.testCases,
     })
     .from(studentExamQuestions)
     .innerJoin(problems, eq(studentExamQuestions.problemId, problems.id))

@@ -15,9 +15,23 @@ interface TestCaseResult {
   id: number;
   passed: boolean;
   actual_output: string;
+  expected_output?: string;
   error: string;
   time: string;
   memory: string;
+}
+
+// Helper to show whitespace characters for debugging
+function visualizeWhitespace(text: string): string {
+  return text
+    .replace(/ /g, '·')  // Show spaces as dots
+    .replace(/\t/g, '→') // Show tabs as arrows
+    .replace(/\n/g, '↵\n'); // Show newlines
+}
+
+// Helper to check if strings match after normalization
+function normalizeOutput(text: string): string {
+  return text.trim().replace(/\s+/g, ' ');
 }
 
 interface SubmissionResultProps {
@@ -146,11 +160,74 @@ export function SubmissionResult({
                           </pre>
                         </div>
                       ) : (
-                        <div>
-                          <div className="font-semibold mb-1">Output:</div>
-                          <pre className="font-mono whitespace-pre-wrap text-xs bg-background p-2 rounded border">
-                            {result.actual_output || "(empty)"}
-                          </pre>
+                        <div className="space-y-2">
+                          {result.expected_output && (
+                            <>
+                              <div>
+                                <div className="font-semibold text-green-600 dark:text-green-400 mb-1">
+                                  Expected Output:
+                                </div>
+                                <pre className="font-mono whitespace-pre-wrap text-xs bg-background p-2 rounded border">
+                                  {result.expected_output}
+                                </pre>
+                              </div>
+                              <div>
+                                <div className="font-semibold mb-1">
+                                  Actual Output:
+                                </div>
+                                <pre className="font-mono whitespace-pre-wrap text-xs bg-background p-2 rounded border">
+                                  {result.actual_output || "(empty)"}
+                                </pre>
+                              </div>
+                              {!result.passed && result.expected_output && (
+                                <div className="pt-2 border-t">
+                                  <div className="text-xs text-muted-foreground mb-2">
+                                    <span className="font-semibold">Debug Info:</span>
+                                    {normalizeOutput(result.actual_output) === normalizeOutput(result.expected_output) ? (
+                                      <span className="text-amber-600 dark:text-amber-400 ml-2">
+                                        ⚠️ Outputs match when normalized - likely whitespace issue
+                                      </span>
+                                    ) : (
+                                      <span className="text-red-600 dark:text-red-400 ml-2">
+                                        ❌ Outputs differ in content
+                                      </span>
+                                    )}
+                                  </div>
+                                  <details className="text-xs">
+                                    <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+                                      Show whitespace visualization
+                                    </summary>
+                                    <div className="mt-2 space-y-2">
+                                      <div>
+                                        <div className="font-semibold text-green-600 dark:text-green-400 mb-1">
+                                          Expected (· = space, → = tab, ↵ = newline):
+                                        </div>
+                                        <pre className="font-mono whitespace-pre-wrap text-xs bg-background p-2 rounded border">
+                                          {visualizeWhitespace(result.expected_output)}
+                                        </pre>
+                                      </div>
+                                      <div>
+                                        <div className="font-semibold mb-1">
+                                          Actual (· = space, → = tab, ↵ = newline):
+                                        </div>
+                                        <pre className="font-mono whitespace-pre-wrap text-xs bg-background p-2 rounded border">
+                                          {visualizeWhitespace(result.actual_output)}
+                                        </pre>
+                                      </div>
+                                    </div>
+                                  </details>
+                                </div>
+                              )}
+                            </>
+                          )}
+                          {!result.expected_output && (
+                            <div>
+                              <div className="font-semibold mb-1">Output:</div>
+                              <pre className="font-mono whitespace-pre-wrap text-xs bg-background p-2 rounded border">
+                                {result.actual_output || "(empty)"}
+                              </pre>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
