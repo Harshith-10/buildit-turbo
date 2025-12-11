@@ -10,7 +10,8 @@
     "format": "biome format --write",
     "db:reset": "tsx scripts/reset.ts",
     "db:push": "drizzle-kit push",
-    "db:seed": "tsx scripts/seed/seed.ts"
+    "db:seed": "tsx scripts/seed/seed.ts",
+    "setup": "node -e \"console.log('Please run: .\\\\setup.ps1 (Windows) or ./setup.sh (Unix/Linux/macOS)')\""
   },
   "dependencies": {
     "@ariakit/react": "^0.4.20",

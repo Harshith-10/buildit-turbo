@@ -19,18 +19,29 @@ interface CodeEditorWrapperProps {
   starterCode: string;
   value?: string;
   onChange?: (value: string) => void;
+  language?: string;
+  onLanguageChange?: (language: string) => void;
 }
 
 export function CodeEditorWrapper({
   starterCode,
   value,
   onChange,
+  language: externalLanguage,
+  onLanguageChange,
 }: CodeEditorWrapperProps) {
   const [internalCode, setInternalCode] = useState(starterCode);
-  const [language, setLanguage] = useState("javascript");
+  const [internalLanguage, setInternalLanguage] = useState("javascript");
   const [settings, setSettings] = useState<CodeEditorSettingsState>({
     fontSize: 14,
   });
+
+  // Use controlled language if provided, otherwise use internal state
+  const language = externalLanguage ?? internalLanguage;
+  const handleLanguageChange = (newLanguage: string) => {
+    setInternalLanguage(newLanguage);
+    onLanguageChange?.(newLanguage);
+  };
 
   const handleCodeChange = (newCode: string) => {
     setInternalCode(newCode);
@@ -49,7 +60,7 @@ export function CodeEditorWrapper({
           </span>
         </div>
         <div className="flex items-center">
-          <Select value={language} onValueChange={setLanguage}>
+          <Select value={language} onValueChange={handleLanguageChange}>
             <SelectTrigger className="w-[120px] h-8 text-xs">
               <SelectValue placeholder="Language" />
             </SelectTrigger>

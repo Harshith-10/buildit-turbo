@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { db } from "@/db";
 import { examSessions, exams } from "@/db/schema/exams";
 import { auth } from "@/lib/auth";
+import { MissedExamToast } from "./missed-exam-toast";
 
 export const metadata: Metadata = {
   title: "Exam Results | Student Portal",
@@ -21,10 +22,14 @@ interface PageProps {
   params: Promise<{
     examId: string;
   }>;
+  searchParams: Promise<{
+    missed?: string;
+  }>;
 }
 
 export default async function ExamResultsPage(props: PageProps) {
   const params = await props.params;
+  const searchParams = await props.searchParams;
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -49,15 +54,23 @@ export default async function ExamResultsPage(props: PageProps) {
   });
 
   if (!examSession) {
+    // No session exists → redirect to onboarding
     redirect(`/student/exams/${exam.slug}/onboarding`);
   }
 
-  if (
-    examSession.terminationType !== "completed" &&
-    examSession.terminationType !== "terminated"
-  ) {
+  const isCompleted =
+    examSession.terminationType === "completed" ||
+    examSession.terminationType === "terminated" ||
+    examSession.status === "completed" ||
+    examSession.status === "missed";
+
+  if (!isCompleted) {
+    // Exam not completed yet → redirect to take page
     redirect(`/student/exams/${exam.slug}/take`);
   }
+
+  const isMissed = examSession.status === "missed";
+  const showMissedToast = searchParams.missed === "true";
 
   const score = examSession.score ?? 0;
   const maxScore = examSession.maxScore ?? exam.totalMarks ?? 100;
@@ -77,33 +90,61 @@ export default async function ExamResultsPage(props: PageProps) {
 
   return (
     <div className="container mx-auto flex max-w-4xl flex-col gap-6 py-10">
+      {showMissedToast && <MissedExamToast />}
+      
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight">Exam Results</h1>
         <p className="text-muted-foreground">{exam.title}</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Score Card */}
-        <Card className="md:col-span-2">
+      {isMissed ? (
+        <Card className="md:col-span-2 border-orange-500">
           <CardHeader className="text-center pb-2">
-            <div
-              className={`mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full ${
-                passed ? "bg-green-100" : "bg-red-100"
-              }`}
-            >
-              {passed ? (
-                <CheckCircle className="h-10 w-10 text-green-600" />
-              ) : (
-                <XCircle className="h-10 w-10 text-red-600" />
-              )}
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-orange-100">
+              <XCircle className="h-10 w-10 text-orange-600" />
             </div>
-            <CardTitle className="text-2xl">
-              {passed
-                ? "Congratulations! You Passed!"
-                : "Better Luck Next Time"}
+            <CardTitle className="text-2xl text-orange-600">
+              Exam Missed
             </CardTitle>
           </CardHeader>
-          <CardContent className="text-center">
+          <CardContent className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              You did not attempt this exam within the scheduled time period.
+            </p>
+            <Badge variant="outline" className="text-orange-600 border-orange-600">
+              Missed
+            </Badge>
+            <div className="pt-4">
+              <Link href="/student/exams/upcoming">
+                <Button>Browse Upcoming Exams</Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      ) : (
+        <>
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Score Card */}
+            <Card className="md:col-span-2">
+              <CardHeader className="text-center pb-2">
+                <div
+                  className={`mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full ${
+                    passed ? "bg-green-100" : "bg-red-100"
+                  }`}
+                >
+                  {passed ? (
+                    <CheckCircle className="h-10 w-10 text-green-600" />
+                  ) : (
+                    <XCircle className="h-10 w-10 text-red-600" />
+                  )}
+                </div>
+                <CardTitle className="text-2xl">
+                  {passed
+                    ? "Congratulations! You Passed!"
+                    : "Better Luck Next Time"}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
             <div className="mb-6">
               <div className="text-5xl font-bold mb-2">{percentage}%</div>
               <p className="text-muted-foreground">
@@ -223,6 +264,8 @@ export default async function ExamResultsPage(props: PageProps) {
           <Link href="/student/exams/upcoming">Browse Upcoming Exams</Link>
         </Button>
       </div>
+      </>
+      )}
     </div>
   );
 }

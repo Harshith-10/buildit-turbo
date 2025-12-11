@@ -1,0 +1,1197 @@
+================================================================================
+                        PROGRAMMING PROBLEMS COLLECTION
+================================================================================
+
+Total Problems: 50
+Categories: Arrays, Strings, Math, Logic, Linked List, Tree, Graph, Stack, 
+           Binary Search, Dynamic Programming, Backtracking, etc.
+
+================================================================================
+
+PROBLEM 1: Pizza Party Distribution
+Difficulty: easy
+Category: Math
+Tags: Math, Basics
+
+Description:
+Given the number of people, number of pizzas, and slices per pizza, calculate 
+the number of slices each person gets and the number of leftovers. Return an 
+array where index 0 is slices per person and index 1 is leftovers.
+
+Examples:
+  Input: people = 5, pizzas = 2, slicesPerPizza = 8
+  Output: [3, 1]
+  Explanation: Total 16 slices. 16/5 = 3, 16%5 = 1.
+
+  Input: people = 4, pizzas = 1, slicesPerPizza = 8
+  Output: [2, 0]
+  Explanation: Total 8 slices. 8/4 = 2, 8%4 = 0.
+
+  Input: people = 3, pizzas = 3, slicesPerPizza = 6
+  Output: [6, 0]
+
+Constraints:
+  - people > 0
+  - pizzas > 0
+  - slicesPerPizza > 0
+
+================================================================================
+
+PROBLEM 2: Numbers to Names
+Difficulty: easy
+Category: Control Flow
+Tags: Switch Case, Strings
+
+Description:
+Convert a number from 1 to 12 into the corresponding month name. If the number 
+is out of range, return 'Invalid'.
+
+Examples:
+  Input: month = 3
+  Output: "March"
+
+  Input: month = 12
+  Output: "December"
+
+  Input: month = 13
+  Output: "Invalid"
+
+Constraints:
+  - 1 <= month <= 100
+
+================================================================================
+
+PROBLEM 3: Comparing Numbers
+Difficulty: easy
+Category: Logic
+Tags: Logic, Conditionals
+
+Description:
+Given three integers, determine the largest number. However, if any two numbers 
+are the same, return -1 to indicate an error state.
+
+Examples:
+  Input: a = 1, b = 51, c = 2
+  Output: 51
+
+  Input: a = 10, b = 10, c = 5
+  Output: -1
+
+  Input: a = 5, b = 4, c = 5
+  Output: -1
+
+Constraints:
+  - -10^9 <= a, b, c <= 10^9
+
+================================================================================
+
+PROBLEM 4: Anagram Checker
+Difficulty: easy
+Category: Strings
+Tags: Strings, Sorting
+
+Description:
+Write a function that checks if two provided strings are anagrams of each other.
+
+Examples:
+  Input: s1 = "note", s2 = "tone"
+  Output: true
+
+  Input: s1 = "hello", s2 = "world"
+  Output: false
+
+  Input: s1 = "listen", s2 = "silent"
+  Output: true
+
+Constraints:
+  - Strings consist of lowercase English letters.
+
+================================================================================
+
+PROBLEM 5: Filtering Evens
+Difficulty: easy
+Category: Arrays
+Tags: Arrays, Filtering
+
+Description:
+Given an array of integers, return a new array containing only the even numbers, 
+keeping their original order.
+
+Examples:
+  Input: nums = [1, 2, 3, 4, 5, 6]
+  Output: [2, 4, 6]
+
+  Input: nums = [1, 3, 5]
+  Output: []
+
+  Input: nums = [2, 4, 8]
+  Output: [2, 4, 8]
+
+Constraints:
+  - Array length <= 1000
+
+================================================================================
+
+PROBLEM 6: Computing Statistics
+Difficulty: easy
+Category: Math
+Tags: Math, Arrays
+
+Description:
+Given a list of response times (integers), return an array containing 
+[mean, minimum, maximum]. For the mean, round down to the nearest integer.
+
+Examples:
+  Input: times = [100, 200, 1000, 300]
+  Output: [400, 100, 1000]
+
+  Input: times = [10, 20, 30]
+  Output: [20, 10, 30]
+
+  Input: times = [5, 5, 5]
+  Output: [5, 5, 5]
+
+Constraints:
+  - Array is not empty
+  - Values are positive
+
+================================================================================
+
+PROBLEM 7: Word Reverser
+Difficulty: easy
+Category: Strings
+Tags: Strings, Manipulation
+
+Description:
+Given a sentence string, reverse each word individually while preserving the 
+original word order and whitespace.
+
+Examples:
+  Input: "Where did the pirate purchase his hook"
+  Output: "erehW did eht etarip esahcrup sih kooh"
+
+  Input: "Hello World"
+  Output: "olleH dlroW"
+
+  Input: "a b c"
+  Output: "a b c"
+
+Constraints:
+  - Words are separated by single spaces
+
+================================================================================
+
+PROBLEM 8: Score Validator
+Difficulty: easy
+Category: Strings
+Tags: Parsing, Logic
+
+Description:
+Given a string containing numbers (0-10) separated by relation signs (<, >, =), 
+check if the entire sequence of relations holds true.
+
+Examples:
+  Input: "1<2>1<10=10>2"
+  Output: true
+
+  Input: "1<1"
+  Output: false
+
+  Input: "5=5=5"
+  Output: true
+
+Constraints:
+  - String follows number-operator-number pattern
+
+================================================================================
+
+PROBLEM 9: Comment Extractor
+Difficulty: easy
+Category: Lists
+Tags: Lists, Pattern
+
+Description:
+Given a list of strings representing a logbook where every 4th line is a 
+comment (lines 0, 1, 2 are data, line 3 is comment...), return a list 
+containing only the comments.
+
+Examples:
+  Input: ["D1", "D2", "D3", "C1", "D4", "D5", "D6", "C2"]
+  Output: ["C1", "C2"]
+
+  Input: ["A", "B", "C", "Comm1"]
+  Output: ["Comm1"]
+
+  Input: ["A", "B"]
+  Output: []
+
+Constraints:
+  - Input list can be empty
+
+================================================================================
+
+PROBLEM 10: Veggie Cheeser
+Difficulty: easy
+Category: Lists
+Tags: Lists, Insertion
+
+Description:
+Given a list of ingredients and a target vegetable, insert the string 'cheese' 
+immediately after every occurrence of that vegetable in the list.
+
+Examples:
+  Input: ingredients = ["tomato", "onion", "lettuce"], target = "tomato"
+  Output: ["tomato", "cheese", "onion", "lettuce"]
+
+  Input: ingredients = ["bun", "patty"], target = "tomato"
+  Output: ["bun", "patty"]
+
+  Input: ingredients = ["tomato", "tomato"], target = "tomato"
+  Output: ["tomato", "cheese", "tomato", "cheese"]
+
+Constraints:
+  - List is modifiable
+
+================================================================================
+
+PROBLEM 11: Longest Substring Without Repeating Characters
+Difficulty: medium
+Category: Sliding Window
+Tags: Hash Table, String, Sliding Window
+
+Description:
+Given a string s, find the length of the longest substring without repeating 
+characters.
+
+Examples:
+  Input: s = "abcabcbb"
+  Output: 3
+  Explanation: "abc" length 3
+
+  Input: s = "bbbbb"
+  Output: 1
+  Explanation: "b" length 1
+
+  Input: s = "pwwkew"
+  Output: 3
+  Explanation: "wke" length 3
+
+Constraints:
+  - 0 <= s.length <= 5 * 10^4
+
+================================================================================
+
+PROBLEM 12: Container With Most Water
+Difficulty: medium
+Category: Two Pointers
+Tags: Array, Two Pointers, Greedy
+
+Description:
+Find two lines that together with the x-axis form a container, such that the 
+container contains the most water.
+
+Examples:
+  Input: [1,8,6,2,5,4,8,3,7]
+  Output: 49
+
+  Input: [1,1]
+  Output: 1
+
+  Input: [4,3,2,1,4]
+  Output: 16
+
+Constraints:
+  - n == height.length
+  - 2 <= n <= 10^5
+
+================================================================================
+
+PROBLEM 13: 3Sum
+Difficulty: medium
+Category: Two Pointers
+Tags: Array, Two Pointers, Sorting
+
+Description:
+Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] 
+such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+
+Examples:
+  Input: nums = [-1,0,1,2,-1,-4]
+  Output: [[-1,-1,2],[-1,0,1]]
+
+  Input: nums = [0,1,1]
+  Output: []
+
+  Input: nums = [0,0,0]
+  Output: [[0,0,0]]
+
+Constraints:
+  - 3 <= nums.length <= 3000
+
+================================================================================
+
+PROBLEM 14: Group Anagrams
+Difficulty: medium
+Category: Strings
+Tags: Hash Table, String, Sorting
+
+Description:
+Given an array of strings strs, group the anagrams together. You can return 
+the answer in any order.
+
+Examples:
+  Input: strs = ["eat","tea","tan","ate","nat","bat"]
+  Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+  Input: strs = [""]
+  Output: [[""]]
+
+  Input: strs = ["a"]
+  Output: [["a"]]
+
+Constraints:
+  - 1 <= strs.length <= 10^4
+
+================================================================================
+
+PROBLEM 15: Product of Array Except Self
+Difficulty: medium
+Category: Arrays
+Tags: Array, Prefix Sum
+
+Description:
+Given an integer array nums, return an array answer such that answer[i] is 
+equal to the product of all the elements of nums except nums[i].
+
+Examples:
+  Input: nums = [1,2,3,4]
+  Output: [24,12,8,6]
+
+  Input: nums = [-1,1,0,-3,3]
+  Output: [0,0,9,0,0]
+
+Constraints:
+  - 2 <= nums.length <= 10^5
+
+================================================================================
+
+PROBLEM 16: Top K Frequent Elements
+Difficulty: medium
+Category: Heap
+Tags: Array, Hash Table, Heap
+
+Description:
+Given an integer array nums and an integer k, return the k most frequent 
+elements. You may return the answer in any order.
+
+Examples:
+  Input: nums = [1,1,1,2,2,3], k = 2
+  Output: [1,2]
+
+  Input: nums = [1], k = 1
+  Output: [1]
+
+Constraints:
+  - k is in the range [1, the number of unique elements]
+
+================================================================================
+
+PROBLEM 17: Longest Consecutive Sequence
+Difficulty: medium
+Category: Arrays
+Tags: Array, Hash Table, Union Find
+
+Description:
+Given an unsorted array of integers nums, return the length of the longest 
+consecutive elements sequence.
+
+Examples:
+  Input: nums = [100,4,200,1,3,2]
+  Output: 4
+
+  Input: nums = [0,3,7,2,5,8,4,6,0,1]
+  Output: 9
+
+Constraints:
+  - 0 <= nums.length <= 10^5
+
+================================================================================
+
+PROBLEM 18: Valid Sudoku
+Difficulty: medium
+Category: Matrix
+Tags: Array, Hash Table, Matrix
+
+Description:
+Determine if a 9 x 9 Sudoku board is valid.
+
+Examples:
+  Input: board = [["5","3",".",...]]
+  Output: true
+
+  Input: board = [["8","3",".","8"...]]
+  Output: false
+
+Constraints:
+  - board.length == 9
+  - board[i].length == 9
+
+================================================================================
+
+PROBLEM 19: Search in Rotated Sorted Array
+Difficulty: medium
+Category: Binary Search
+Tags: Array, Binary Search
+
+Description:
+Given the array nums and an integer target, return the index of target if it 
+is in nums, or -1 if it is not.
+
+Examples:
+  Input: nums = [4,5,6,7,0,1,2], target = 0
+  Output: 4
+
+  Input: nums = [4,5,6,7,0,1,2], target = 3
+  Output: -1
+
+  Input: nums = [1], target = 0
+  Output: -1
+
+Constraints:
+  - 1 <= nums.length <= 5000
+
+================================================================================
+
+PROBLEM 20: Find Minimum in Rotated Sorted Array
+Difficulty: medium
+Category: Binary Search
+Tags: Array, Binary Search
+
+Description:
+Find the minimum element of this array.
+
+Examples:
+  Input: nums = [3,4,5,1,2]
+  Output: 1
+
+  Input: nums = [4,5,6,7,0,1,2]
+  Output: 0
+
+  Input: nums = [11,13,15,17]
+  Output: 11
+
+Constraints:
+  - n == nums.length
+
+================================================================================
+
+PROBLEM 21: Add Two Numbers
+Difficulty: medium
+Category: Linked List
+Tags: Linked List, Math
+
+Description:
+Add the two numbers and return the sum as a linked list.
+
+Examples:
+  Input: l1 = [2,4,3], l2 = [5,6,4]
+  Output: [7,0,8]
+
+  Input: l1 = [0], l2 = [0]
+  Output: [0]
+
+  Input: l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
+  Output: [8,9,9,9,0,0,0,1]
+
+Constraints:
+  - Number of nodes in each linked list is in the range [1, 100]
+
+================================================================================
+
+PROBLEM 22: Remove Nth Node From End of List
+Difficulty: medium
+Category: Linked List
+Tags: Linked List, Two Pointers
+
+Description:
+Given the head of a linked list, remove the nth node from the end of the list 
+and return its head.
+
+Examples:
+  Input: head = [1,2,3,4,5], n = 2
+  Output: [1,2,3,5]
+
+  Input: head = [1], n = 1
+  Output: []
+
+  Input: head = [1,2], n = 1
+  Output: [1]
+
+Constraints:
+  - 1 <= sz <= 30
+
+================================================================================
+
+PROBLEM 23: Daily Temperatures
+Difficulty: medium
+Category: Stack
+Tags: Stack, Array, Monotonic Stack
+
+Description:
+Return an array answer such that answer[i] is the number of days you have to 
+wait after the ith day to get a warmer temperature.
+
+Examples:
+  Input: temperatures = [73,74,75,71,69,72,76,73]
+  Output: [1,1,4,2,1,1,0,0]
+
+  Input: temperatures = [30,40,50,60]
+  Output: [1,1,1,0]
+
+  Input: temperatures = [30,60,90]
+  Output: [1,1,0]
+
+Constraints:
+  - 1 <= temperatures.length <= 10^5
+
+================================================================================
+
+PROBLEM 24: Generate Parentheses
+Difficulty: medium
+Category: Backtracking
+Tags: String, Backtracking, Dynamic Programming
+
+Description:
+Given n pairs of parentheses, write a function to generate all combinations 
+of well-formed parentheses.
+
+Examples:
+  Input: n = 3
+  Output: ["((()))","(()())","(())()","()(())","()()()"]
+
+  Input: n = 1
+  Output: ["()"]
+
+Constraints:
+  - 1 <= n <= 8
+
+================================================================================
+
+PROBLEM 25: Number of Islands
+Difficulty: medium
+Category: Graph
+Tags: Array, DFS, BFS, Union Find
+
+Description:
+Given an m x n 2D binary grid grid which represents a map of '1's (land) and 
+'0's (water), return the number of islands.
+
+Examples:
+  Input: grid = [["1","1","1","1","0"],["1","1","0","1","0"],["1","1","0","0","0"],["0","0","0","0","0"]]
+  Output: 1
+
+  Input: grid = [["1","1","0","0","0"],["1","1","0","0","0"],["0","0","1","0","0"],["0","0","0","1","1"]]
+  Output: 3
+
+Constraints:
+  - m == grid.length
+  - n == grid[i].length
+
+================================================================================
+
+PROBLEM 26: Binary Tree Level Order Traversal
+Difficulty: medium
+Category: Tree
+Tags: Tree, BFS
+
+Description:
+Given the root of a binary tree, return the level order traversal of its 
+nodes' values.
+
+Examples:
+  Input: root = [3,9,20,null,null,15,7]
+  Output: [[3],[9,20],[15,7]]
+
+  Input: root = [1]
+  Output: [[1]]
+
+  Input: root = []
+  Output: []
+
+Constraints:
+  - The number of nodes is in the range [0, 2000]
+
+================================================================================
+
+PROBLEM 27: Validate Binary Search Tree
+Difficulty: medium
+Category: Tree
+Tags: Tree, DFS, BST
+
+Description:
+Given the root of a binary tree, determine if it is a valid binary search 
+tree (BST).
+
+Examples:
+  Input: root = [2,1,3]
+  Output: true
+
+  Input: root = [5,1,4,null,null,3,6]
+  Output: false
+
+  Input: root = [2,2,2]
+  Output: false
+
+Constraints:
+  - The number of nodes is in the range [1, 10^4]
+
+================================================================================
+
+PROBLEM 28: Kth Smallest Element in a BST
+Difficulty: medium
+Category: Tree
+Tags: Tree, DFS, BST
+
+Description:
+Given the root of a binary search tree, and an integer k, return the kth 
+smallest value (1-indexed) of all the values of the nodes in the tree.
+
+Examples:
+  Input: root = [3,1,4,null,2], k = 1
+  Output: 1
+
+  Input: root = [5,3,6,2,4,null,null,1], k = 3
+  Output: 3
+
+Constraints:
+  - 1 <= k <= n <= 10^4
+
+================================================================================
+
+PROBLEM 29: Coin Change
+Difficulty: medium
+Category: Dynamic Programming
+Tags: Array, DP, BFS
+
+Description:
+Return the fewest number of coins that you need to make up that amount.
+
+Examples:
+  Input: coins = [1,2,5], amount = 11
+  Output: 3
+
+  Input: coins = [2], amount = 3
+  Output: -1
+
+  Input: coins = [1], amount = 0
+  Output: 0
+
+Constraints:
+  - 1 <= coins.length <= 12
+
+================================================================================
+
+PROBLEM 30: Longest Increasing Subsequence
+Difficulty: medium
+Category: Dynamic Programming
+Tags: Array, DP, Binary Search
+
+Description:
+Given an integer array nums, return the length of the longest strictly 
+increasing subsequence.
+
+Examples:
+  Input: nums = [10,9,2,5,3,7,101,18]
+  Output: 4
+
+  Input: nums = [0,1,0,3,2,3]
+  Output: 4
+
+  Input: nums = [7,7,7,7,7,7,7]
+  Output: 1
+
+Constraints:
+  - 1 <= nums.length <= 2500
+
+================================================================================
+
+PROBLEM 31: Two Sum
+Difficulty: easy
+Category: Arrays
+Tags: Array, Hash Table
+
+Description:
+Given an array of integers nums and an integer target, return indices of the 
+two numbers such that they add up to target.
+
+Examples:
+  Input: nums = [2,7,11,15], target = 9
+  Output: [0,1]
+  Explanation: nums[0] + nums[1] == 9
+
+  Input: nums = [3,2,4], target = 6
+  Output: [1,2]
+
+  Input: nums = [3,3], target = 6
+  Output: [0,1]
+
+Constraints:
+  - 2 <= nums.length <= 10^4
+  - -10^9 <= nums[i] <= 10^9
+
+================================================================================
+
+PROBLEM 32: Palindrome Number
+Difficulty: easy
+Category: Math
+Tags: Math
+
+Description:
+Given an integer x, return true if x is a palindrome, and false otherwise.
+
+Examples:
+  Input: x = 121
+  Output: true
+  Explanation: 121 reads as 121 from left to right and right to left.
+
+  Input: x = -121
+  Output: false
+  Explanation: From left to right, it reads -121. From right to left, it becomes 121-.
+
+  Input: x = 10
+  Output: false
+
+Constraints:
+  - -2^31 <= x <= 2^31 - 1
+
+================================================================================
+
+PROBLEM 33: Roman to Integer
+Difficulty: easy
+Category: Strings
+Tags: Hash Table, Math, String
+
+Description:
+Given a roman numeral, convert it to an integer.
+
+Examples:
+  Input: s = "III"
+  Output: 3
+
+  Input: s = "LVIII"
+  Output: 58
+
+  Input: s = "MCMXCIV"
+  Output: 1994
+
+Constraints:
+  - 1 <= s.length <= 15
+  - s contains only characters ('I', 'V', 'X', 'L', 'C', 'D', 'M')
+
+================================================================================
+
+PROBLEM 34: Valid Parentheses
+Difficulty: easy
+Category: Stack
+Tags: String, Stack
+
+Description:
+Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', 
+determine if the input string is valid.
+
+Examples:
+  Input: s = "()[]{}"
+  Output: true
+
+  Input: s = "(]"
+  Output: false
+
+  Input: s = "([)]"
+  Output: false
+
+Constraints:
+  - 1 <= s.length <= 10^4
+
+================================================================================
+
+PROBLEM 35: Merge Two Sorted Lists
+Difficulty: easy
+Category: Linked List
+Tags: Linked List, Recursion
+
+Description:
+You are given the heads of two sorted linked lists list1 and list2. Merge the 
+two lists into one sorted list.
+
+Examples:
+  Input: list1 = [1,2,4], list2 = [1,3,4]
+  Output: [1,1,2,3,4,4]
+
+  Input: list1 = [], list2 = []
+  Output: []
+
+  Input: list1 = [], list2 = [0]
+  Output: [0]
+
+Constraints:
+  - Number of nodes in both lists is in the range [0, 50]
+
+================================================================================
+
+PROBLEM 36: Remove Duplicates from Sorted Array
+Difficulty: easy
+Category: Arrays
+Tags: Array, Two Pointers
+
+Description:
+Given an integer array nums sorted in non-decreasing order, remove the 
+duplicates in-place such that each unique element appears only once. Return 
+the k unique elements.
+
+Examples:
+  Input: nums = [1,1,2]
+  Output: 2, nums = [1,2,_]
+
+  Input: nums = [0,0,1,1,1,2,2,3,3,4]
+  Output: 5
+
+Constraints:
+  - 1 <= nums.length <= 3 * 10^4
+
+================================================================================
+
+PROBLEM 37: Search Insert Position
+Difficulty: easy
+Category: Binary Search
+Tags: Array, Binary Search
+
+Description:
+Given a sorted array of distinct integers and a target value, return the index 
+if the target is found. If not, return the index where it would be if it were 
+inserted in order.
+
+Examples:
+  Input: nums = [1,3,5,6], target = 5
+  Output: 2
+
+  Input: nums = [1,3,5,6], target = 2
+  Output: 1
+
+  Input: nums = [1,3,5,6], target = 7
+  Output: 4
+
+Constraints:
+  - 1 <= nums.length <= 10^4
+
+================================================================================
+
+PROBLEM 38: Length of Last Word
+Difficulty: easy
+Category: Strings
+Tags: String
+
+Description:
+Given a string s consisting of words and spaces, return the length of the last 
+word in the string.
+
+Examples:
+  Input: s = "Hello World"
+  Output: 5
+
+  Input: s = "   fly me   to   the moon  "
+  Output: 4
+
+  Input: s = "luffy is still joyboy"
+  Output: 6
+
+Constraints:
+  - 1 <= s.length <= 10^4
+
+================================================================================
+
+PROBLEM 39: Plus One
+Difficulty: easy
+Category: Arrays
+Tags: Array, Math
+
+Description:
+You are given a large integer represented as an integer array digits, where 
+each digits[i] is the ith digit of the integer. Increment the large integer 
+by one and return the resulting array of digits.
+
+Examples:
+  Input: digits = [1,2,3]
+  Output: [1,2,4]
+
+  Input: digits = [4,3,2,1]
+  Output: [4,3,2,2]
+
+  Input: digits = [9]
+  Output: [1,0]
+
+Constraints:
+  - 1 <= digits.length <= 100
+
+================================================================================
+
+PROBLEM 40: Climbing Stairs
+Difficulty: easy
+Category: Dynamic Programming
+Tags: Math, Dynamic Programming
+
+Description:
+You are climbing a staircase. It takes n steps to reach the top. Each time 
+you can either climb 1 or 2 steps. In how many distinct ways can you climb 
+to the top?
+
+Examples:
+  Input: n = 2
+  Output: 2
+  Explanation: 1+1, 2
+
+  Input: n = 3
+  Output: 3
+  Explanation: 1+1+1, 1+2, 2+1
+
+Constraints:
+  - 1 <= n <= 45
+
+================================================================================
+
+PROBLEM 41: Valid Palindrome
+Difficulty: easy
+Category: Strings
+Tags: Two Pointers, String
+
+Description:
+A phrase is a palindrome if, after converting all uppercase letters into 
+lowercase letters and removing all non-alphanumeric characters, it reads the 
+same forward and backward.
+
+Examples:
+  Input: s = "A man, a plan, a canal: Panama"
+  Output: true
+
+  Input: s = "race a car"
+  Output: false
+
+  Input: s = " "
+  Output: true
+
+Constraints:
+  - 1 <= s.length <= 2 * 10^5
+
+================================================================================
+
+PROBLEM 42: Single Number
+Difficulty: easy
+Category: Bit Manipulation
+Tags: Bit Manipulation, Array
+
+Description:
+Given a non-empty array of integers nums, every element appears twice except 
+for one. Find that single one. You must implement a solution with a linear 
+runtime complexity and use only constant extra space.
+
+Examples:
+  Input: nums = [2,2,1]
+  Output: 1
+
+  Input: nums = [4,1,2,1,2]
+  Output: 4
+
+  Input: nums = [1]
+  Output: 1
+
+Constraints:
+  - 1 <= nums.length <= 3 * 10^4
+
+================================================================================
+
+PROBLEM 43: Best Time to Buy and Sell Stock
+Difficulty: easy
+Category: Arrays
+Tags: Array, Dynamic Programming
+
+Description:
+You are given an array prices where prices[i] is the price of a given stock 
+on the ith day. You want to maximize your profit by choosing a single day to 
+buy one stock and choosing a different day in the future to sell that stock.
+
+Examples:
+  Input: prices = [7,1,5,3,6,4]
+  Output: 5
+  Explanation: Buy day 2 (1), sell day 5 (6)
+
+  Input: prices = [7,6,4,3,1]
+  Output: 0
+  Explanation: No transactions.
+
+Constraints:
+  - 1 <= prices.length <= 10^5
+
+================================================================================
+
+PROBLEM 44: Missing Number
+Difficulty: easy
+Category: Arrays
+Tags: Array, Hash Table, Bit Manipulation
+
+Description:
+Given an array nums containing n distinct numbers in the range [0, n], return 
+the only number in the range that is missing from the array.
+
+Examples:
+  Input: nums = [3,0,1]
+  Output: 2
+
+  Input: nums = [0,1]
+  Output: 2
+
+  Input: nums = [9,6,4,2,3,5,7,0,1]
+  Output: 8
+
+Constraints:
+  - n == nums.length
+  - 1 <= n <= 10^4
+
+================================================================================
+
+PROBLEM 45: Move Zeroes
+Difficulty: easy
+Category: Arrays
+Tags: Array, Two Pointers
+
+Description:
+Given an integer array nums, move all 0's to the end of it while maintaining 
+the relative order of the non-zero elements. Note that you must do this 
+in-place without making a copy of the array.
+
+Examples:
+  Input: nums = [0,1,0,3,12]
+  Output: [1,3,12,0,0]
+
+  Input: nums = [0]
+  Output: [0]
+
+Constraints:
+  - 1 <= nums.length <= 10^4
+
+================================================================================
+
+PROBLEM 46: Reverse String
+Difficulty: easy
+Category: Strings
+Tags: Two Pointers, String
+
+Description:
+Write a function that reverses a string. The input string is given as an array 
+of characters s. You must do this by modifying the input array in-place with 
+O(1) extra memory.
+
+Examples:
+  Input: s = ["h","e","l","l","o"]
+  Output: ["o","l","l","e","h"]
+
+  Input: s = ["H","a","n","n","a","h"]
+  Output: ["h","a","n","n","a","H"]
+
+Constraints:
+  - 1 <= s.length <= 10^5
+
+================================================================================
+
+PROBLEM 47: Fizz Buzz
+Difficulty: easy
+Category: Math
+Tags: Math, String, Simulation
+
+Description:
+Given an integer n, return a string array answer (1-indexed) where: 
+answer[i] == "FizzBuzz" if i is divisible by 3 and 5, answer[i] == "Fizz" if 
+i is divisible by 3, answer[i] == "Buzz" if i is divisible by 5, and 
+answer[i] == i (as a string) otherwise.
+
+Examples:
+  Input: n = 3
+  Output: ["1","2","Fizz"]
+
+  Input: n = 5
+  Output: ["1","2","Fizz","4","Buzz"]
+
+  Input: n = 15
+  Output: [...,"14","FizzBuzz"]
+
+Constraints:
+  - 1 <= n <= 10^4
+
+================================================================================
+
+PROBLEM 48: Majority Element
+Difficulty: easy
+Category: Arrays
+Tags: Array, Hash Table, Sorting
+
+Description:
+Given an array nums of size n, return the majority element. The majority 
+element is the element that appears more than ⌊n / 2⌋ times.
+
+Examples:
+  Input: nums = [3,2,3]
+  Output: 3
+
+  Input: nums = [2,2,1,1,1,2,2]
+  Output: 2
+
+Constraints:
+  - n == nums.length
+  - 1 <= n <= 5 * 10^4
+
+================================================================================
+
+PROBLEM 49: Contains Duplicate
+Difficulty: easy
+Category: Arrays
+Tags: Array, Hash Table
+
+Description:
+Given an integer array nums, return true if any value appears at least twice 
+in the array, and return false if every element is distinct.
+
+Examples:
+  Input: nums = [1,2,3,1]
+  Output: true
+
+  Input: nums = [1,2,3,4]
+  Output: false
+
+  Input: nums = [1,1,1,3,3,4,3,2,4,2]
+  Output: true
+
+Constraints:
+  - 1 <= nums.length <= 10^5
+
+================================================================================
+
+PROBLEM 50: Pascal's Triangle
+Difficulty: easy
+Category: Arrays
+Tags: Array, Dynamic Programming
+
+Description:
+Given an integer numRows, return the first numRows of Pascal's triangle. In 
+Pascal's triangle, each number is the sum of the two numbers directly above it.
+
+Examples:
+  Input: numRows = 5
+  Output: [[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]
+
+  Input: numRows = 1
+  Output: [[1]]
+
+Constraints:
+  - 1 <= numRows <= 30
+
+================================================================================
+                              END OF PROBLEMS
+================================================================================

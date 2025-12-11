@@ -12,6 +12,27 @@ interface ProblemDescriptionProps {
   };
 }
 
+// Helper function to render rich text description
+function renderDescription(description: string) {
+  try {
+    const parsed = JSON.parse(description);
+    if (Array.isArray(parsed)) {
+      return parsed
+        .map((block) => {
+          const text = block.children
+            ?.map((child: { text: string }) => child.text)
+            .join("");
+          return text;
+        })
+        .filter(Boolean)
+        .join("\n");
+    }
+    return description;
+  } catch {
+    return description;
+  }
+}
+
 export function ProblemDescription({ problem }: ProblemDescriptionProps) {
   const difficultyColor = {
     easy: "bg-emerald-500/10 text-emerald-500",
@@ -39,7 +60,7 @@ export function ProblemDescription({ problem }: ProblemDescriptionProps) {
       </div>
 
       <div className="prose prose-invert max-w-none">
-        <p>{problem.description}</p>
+        <p className="whitespace-pre-wrap">{renderDescription(problem.description)}</p>
       </div>
 
       <div className="flex flex-col gap-4">

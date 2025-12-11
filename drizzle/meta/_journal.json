@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1765340692306,
+      "tag": "0000_early_guardsmen",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1765340837261,
+      "tag": "0001_military_carmella_unuscione",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1765390659592,
+      "tag": "0002_lethal_goliath",
+      "breakpoints": true
+    }
+  ]
+}

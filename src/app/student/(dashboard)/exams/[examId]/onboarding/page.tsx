@@ -31,7 +31,11 @@ export default async function ExamOnboardingPage(props: PageProps) {
     notFound();
   }
 
-  // Check if session already exists
+  const now = new Date();
+  const examStarted = exam.startDate ? new Date(exam.startDate) <= now : true;
+  const examEnded = exam.endDate ? new Date(exam.endDate) < now : false;
+
+  // Check if user has a session
   const existingSession = await db.query.examSessions.findFirst({
     where: and(
       eq(examSessions.userId, session.user.id),
@@ -39,16 +43,41 @@ export default async function ExamOnboardingPage(props: PageProps) {
     ),
   });
 
+  // If user has a session
   if (existingSession) {
-    if (
+    const isCompleted =
       existingSession.terminationType === "completed" ||
-      existingSession.terminationType === "terminated"
-    ) {
+      existingSession.terminationType === "terminated" ||
+      existingSession.status === "completed" ||
+      existingSession.status === "missed";
+
+    if (isCompleted) {
+      // User finished exam → show results
       redirect(`/student/exams/${params.examId}/results`);
+    } else {
+      // User started but not finished → continue exam
+      redirect(`/student/exams/${params.examId}/take`);
     }
-    redirect(`/student/exams/${params.examId}/take`);
   }
 
+  // No session exists - check exam schedule
+  if (!examStarted) {
+    // Exam hasn't started yet
+    redirect("/student/exams/upcoming");
+  }
+
+  if (examEnded) {
+    // Exam ended and user never started → mark as missed and show message
+    await db.insert(examSessions).values({
+      userId: session.user.id,
+      examId: exam.id,
+      status: "missed",
+      terminationType: "terminated",
+    });
+    redirect(`/student/exams/${params.examId}/results?missed=true`);
+  }
+
+  // Exam is valid and user can start
   return (
     <div className="container mx-auto flex max-w-3xl flex-col gap-6 py-10">
       <Card>

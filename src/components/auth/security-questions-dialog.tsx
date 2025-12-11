@@ -110,10 +110,10 @@ export function SecurityQuestionsDialog({
       >
         <DialogHeader>
           <DialogTitle>
-            <h1 className="flex items-center text-3xl text-destructive font-bold pb-2">
+            <div className="flex items-center text-3xl text-destructive font-bold pb-2">
               <Info className="mr-2" />
               Important
-            </h1>
+            </div>
             <span>Setup Security Questions</span>
           </DialogTitle>
           <DialogDescription>

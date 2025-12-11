@@ -37,7 +37,7 @@ export const problems = pgTable("problems", {
   starterCode: jsonb("starter_code").$type<Record<string, string>>().notNull(),
   driverCode: jsonb("driver_code").$type<Record<string, string>>().notNull(),
   testCases: jsonb("test_cases")
-    .$type<{ id: number; input: string; expected: string }[]>()
+    .$type<{ id: number; input: string; expected: string; hidden?: boolean }[]>()
     .notNull(),
 
   createdAt: timestamp("created_at").defaultNow().notNull(),

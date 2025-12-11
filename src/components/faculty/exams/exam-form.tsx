@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import { CalendarIcon, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -12,7 +12,6 @@ import { CollectionsSelector } from "@/components/faculty/exams/collections-sele
 import { DistributionCalculator } from "@/components/faculty/exams/distribution-calculator";
 import { ExamSessionsList } from "@/components/faculty/exams/exam-sessions-list";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
   CardContent,
@@ -20,13 +19,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { DateTimePicker } from "@/components/ui/datetime-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -99,8 +94,11 @@ export function ExamForm({ initialData, isEditing = false }: ExamFormProps) {
     Distribution[]
   >(initialData?.allowedDistributions || []);
 
+  // Only load questions as selected if they were directly added (not from collections)
+  // If collections exist, questions are just the pool and shouldn't be shown as selected
+  const hasCollections = (initialData?.collections?.length ?? 0) > 0;
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>(
-    initialData?.questions?.map((q) => q.id) || [],
+    hasCollections ? [] : (initialData?.questions?.map((q) => q.id) || []),
   );
 
   const [selectedCollections, setSelectedCollections] = useState<string[]>(
@@ -108,10 +106,10 @@ export function ExamForm({ initialData, isEditing = false }: ExamFormProps) {
   );
 
   const [questionPoints, setQuestionPoints] = useState<Record<string, number>>(
-    initialData?.questions?.reduce(
+    hasCollections ? {} : (initialData?.questions?.reduce(
       (acc, q) => ({ ...acc, [q.id]: q.points || 10 }),
       {} as Record<string, number>,
-    ) || {},
+    ) || {}),
   );
 
   const handleChange = (
@@ -156,6 +154,8 @@ export function ExamForm({ initialData, isEditing = false }: ExamFormProps) {
         ...formData,
         startDate: formData.startDate,
         endDate: formData.endDate,
+        questionCount: formData.totalQuestions, // Number of questions per student
+        totalMarks: formData.totalMarks,
         marksPerDifficulty,
         allowedDistributions,
         questions: selectedQuestions.map((id) => ({
@@ -169,7 +169,7 @@ export function ExamForm({ initialData, isEditing = false }: ExamFormProps) {
         const res = await updateExam(initialData.id, payload);
         if (res.success) {
           toast.success("Exam updated successfully");
-          router.push("/faculty/exams");
+          router.push("/faculty/exams/all-exams");
           router.refresh();
         } else {
           toast.error(res.error || "Failed to update exam");
@@ -178,7 +178,7 @@ export function ExamForm({ initialData, isEditing = false }: ExamFormProps) {
         const res = await createExam(payload);
         if (res.success) {
           toast.success("Exam created successfully");
-          router.push("/faculty/exams");
+          router.push("/faculty/exams/all-exams");
           router.refresh();
         } else {
           toast.error(res.error || "Failed to create exam");
@@ -304,87 +304,48 @@ export function ExamForm({ initialData, isEditing = false }: ExamFormProps) {
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <div className="grid gap-4 md:grid-cols-3">
+                      <div className="grid gap-4 md:grid-cols-2">
                         <div className="space-y-2">
-                          <Label>Exam Window</Label>
-                          <div className="flex gap-2">
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-full justify-start text-left font-normal",
-                                    !formData.startDate &&
-                                      "text-muted-foreground",
-                                  )}
-                                >
-                                  <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {formData.startDate ? (
-                                    format(formData.startDate, "PPP")
-                                  ) : (
-                                    <span>Start Date</span>
-                                  )}
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-auto p-0">
-                                <Calendar
-                                  mode="single"
-                                  selected={formData.startDate}
-                                  onSelect={(date) =>
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      startDate: date,
-                                    }))
-                                  }
-                                  initialFocus
-                                />
-                              </PopoverContent>
-                            </Popover>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-full justify-start text-left font-normal",
-                                    !formData.endDate &&
-                                      "text-muted-foreground",
-                                  )}
-                                >
-                                  <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {formData.endDate ? (
-                                    format(formData.endDate, "PPP")
-                                  ) : (
-                                    <span>End Date</span>
-                                  )}
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-auto p-0">
-                                <Calendar
-                                  mode="single"
-                                  selected={formData.endDate}
-                                  onSelect={(date) =>
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      endDate: date,
-                                    }))
-                                  }
-                                  initialFocus
-                                />
-                              </PopoverContent>
-                            </Popover>
-                          </div>
-                          <div className="space-y-2 w-full">
-                            <Label htmlFor="duration">Duration (minutes)</Label>
-                            <Input
-                              id="duration"
-                              name="duration"
-                              type="number"
-                              value={formData.duration}
-                              onChange={handleChange}
-                              required
-                            />
-                          </div>
+                          <Label>Start Date & Time</Label>
+                          <DateTimePicker
+                            date={formData.startDate}
+                            setDate={(date) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                startDate: date,
+                              }))
+                            }
+                            placeholder="Select start date and time"
+                          />
                         </div>
+                        <div className="space-y-2">
+                          <Label>End Date & Time</Label>
+                          <DateTimePicker
+                            date={formData.endDate}
+                            setDate={(date) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                endDate: date,
+                              }))
+                            }
+                            placeholder="Select end date and time"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="duration">Duration (minutes)</Label>
+                        <Input
+                          id="duration"
+                          name="duration"
+                          type="number"
+                          value={formData.duration}
+                          onChange={handleChange}
+                          required
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Duration for each student to complete the exam
+                        </p>
                       </div>
 
                       <div className="space-y-2">
@@ -403,11 +364,14 @@ export function ExamForm({ initialData, isEditing = false }: ExamFormProps) {
                             <SelectItem value="upcoming">
                               Publish (Upcoming)
                             </SelectItem>
+                            <SelectItem value="live">
+                              Publish (Live Now)
+                            </SelectItem>
                           </SelectContent>
                         </Select>
                         <p className="text-xs text-muted-foreground">
-                          Set to "Publish" to schedule the exam. It will
-                          automatically go live at the start date.
+                          Set to "Upcoming" to schedule the exam for the future, or "Live Now" to start immediately. 
+                          Exams will automatically transition from upcoming to live at their start date.
                         </p>
                       </div>
                     </CardContent>

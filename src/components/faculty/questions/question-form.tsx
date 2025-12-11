@@ -84,6 +84,12 @@ export function QuestionForm({
           .map((t: string) => t.trim())
           .filter(Boolean),
         acceptance: Number(formData.acceptance),
+        // Provide required fields with default values
+        examples: [],
+        constraints: [],
+        starterCode: {},
+        driverCode: {},
+        testCases: [],
       };
 
       if (isEditing && initialData?.id) {

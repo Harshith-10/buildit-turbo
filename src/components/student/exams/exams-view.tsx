@@ -22,7 +22,7 @@ interface Exam {
   difficulty: "easy" | "medium" | "hard";
   category: string;
   startDate?: Date | null;
-  status: "draft" | "upcoming" | "live" | "completed" | "missed" | "ongoing";
+  status: "draft" | "upcoming" | "live" | "completed" | "missed";
   expiryDate?: Date | null;
 }
 

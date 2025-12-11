@@ -5,8 +5,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { finishExam, submitExamProblem } from "@/actions/student/exam";
+import { runExamSampleTests } from "@/actions/student/run-exam-tests";
 import { ExamTimer } from "@/components/student/exams/exam-timer";
 import { MalpracticeIndicator } from "@/components/student/exams/malpractice-indicator";
+import { SubmissionResult } from "@/components/student/exams/submission-result";
+import { useCodeExecution } from "@/hooks/use-code-execution";
 import { CodeEditorWrapper } from "@/components/student/problems/code-editor-wrapper";
 import { ProblemDescription } from "@/components/student/problems/problem-description";
 import { Button } from "@/components/ui/button";
@@ -53,6 +56,7 @@ interface ExamInterfaceProps {
   session: ExamSession;
   questions: ExamQuestion[];
   finishTime: Date;
+  malpracticeCount?: number;
 }
 
 export function ExamInterface({
@@ -60,15 +64,37 @@ export function ExamInterface({
   session,
   questions,
   finishTime,
+  malpracticeCount = 0,
 }: ExamInterfaceProps) {
   const router = useRouter();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [code, setCode] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [language, setLanguage] = useState("javascript");
+  
+  // Use the reusable code execution hook
+  const { isRunning, isSubmitting, testResult, runTests, submitCode } =
+    useCodeExecution();
 
   const currentQuestion = questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
   const isFirstQuestion = currentQuestionIndex === 0;
+
+  // Handle empty questions array
+  if (questions.length === 0 || !currentQuestion) {
+    return (
+      <div className="h-screen w-screen flex items-center justify-center bg-background">
+        <div className="text-center space-y-4">
+          <h2 className="text-2xl font-bold">No Questions Available</h2>
+          <p className="text-muted-foreground">
+            This exam doesn't have any questions assigned yet.
+          </p>
+          <Button onClick={() => router.push("/student/exams/take-exam")}>
+            Back to Exams
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const handleNext = () => {
     if (!isLastQuestion) {
@@ -82,28 +108,34 @@ export function ExamInterface({
     }
   };
 
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-    try {
-      // TODO: Implement submission logic
-      await submitExamProblem(
+  const handleRunTests = async () => {
+    console.log("Running tests with:", { language, codeLength: code.length });
+    await runTests(() =>
+      runExamSampleTests(
         session.id,
         currentQuestion.problemId,
         code,
-        "javascript",
-      );
-      toast.success("Solution submitted successfully");
-    } catch (_error) {
-      toast.error("Failed to submit solution");
-    } finally {
-      setIsSubmitting(false);
-    }
+        language,
+      ),
+    );
+  };
+
+  const handleSubmit = async () => {
+    console.log("Submitting with:", { language, codeLength: code.length });
+    await submitCode(() =>
+      submitExamProblem(
+        session.id,
+        currentQuestion.problemId,
+        code,
+        language,
+      ),
+    );
   };
 
   const handleFinishExam = async () => {
     try {
       await finishExam(session.id);
-      router.push(`/student/exams/${exam.id}/finalize`);
+      router.push(`/student/exams/${exam.slug}/finalize`);
     } catch (_error) {
       toast.error("Failed to finish exam");
     }
@@ -142,31 +174,31 @@ export function ExamInterface({
         {/* Center Timer */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-4">
           <ExamTimer finishTime={finishTime} onTimeUp={handleFinishExam} />
-          <MalpracticeIndicator
-            count={
-              Array.isArray(session.malpracticeAttempts)
-                ? session.malpracticeAttempts.length
-                : 0
-            }
-          />
+          <MalpracticeIndicator count={malpracticeCount} />
         </div>
 
         <div className="flex items-center gap-2">
           <div className="mr-4 text-sm font-medium text-muted-foreground">
             {currentQuestion.points} Points
           </div>
-          <Button variant="secondary" size="sm" className="gap-2">
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            className="gap-2"
+            onClick={handleRunTests}
+            disabled={isRunning || isSubmitting}
+          >
             <Play className="h-4 w-4" />
-            Run
+            {isRunning ? "Running..." : "Run Tests"}
           </Button>
           <Button
             size="sm"
             className="gap-2 bg-green-600 hover:bg-green-700 text-white"
             onClick={handleSubmit}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isRunning}
           >
             <Send className="h-4 w-4" />
-            Submit
+            {isSubmitting ? "Submitting..." : "Submit"}
           </Button>
           <Button variant="destructive" size="sm" onClick={handleFinishExam}>
             Finish Exam
@@ -194,28 +226,41 @@ export function ExamInterface({
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel defaultSize={60} minSize={30}>
                 <CodeEditorWrapper
-                  starterCode={currentQuestion.starterCode?.javascript || ""}
+                  starterCode={currentQuestion.starterCode?.[language] || currentQuestion.starterCode?.javascript || ""}
                   value={code}
                   onChange={setCode}
+                  language={language}
+                  onLanguageChange={setLanguage}
                 />
               </ResizablePanel>
 
               <ResizableHandle />
 
               <ResizablePanel defaultSize={40} minSize={20}>
-                <div className="h-full flex flex-col bg-muted/10">
+                <div className="h-full flex flex-col bg-muted/10 overflow-hidden">
                   <div className="flex items-center gap-4 px-4 py-2 border-b bg-muted/20">
                     <span className="text-sm font-medium text-muted-foreground">
-                      Test Cases
-                    </span>
-                    <span className="text-sm font-medium text-muted-foreground">
-                      Result
+                      Test Results
                     </span>
                   </div>
-                  <div className="p-4">
-                    <div className="text-sm text-muted-foreground">
-                      Run code to see results
-                    </div>
+                  <div className="flex-1 overflow-auto p-4">
+                    {testResult ? (
+                      <SubmissionResult
+                        passed={testResult.passed}
+                        totalTests={testResult.totalTests}
+                        passedTests={testResult.passedTests}
+                        compilationError={testResult.compilationError}
+                        systemError={testResult.systemError}
+                        results={testResult.results}
+                      />
+                    ) : (
+                      <div className="h-full flex items-center justify-center text-center text-muted-foreground">
+                        <div>
+                          <p className="text-sm mb-2">No test results yet</p>
+                          <p className="text-xs">Click "Run Tests" to test your code against sample test cases</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </ResizablePanel>
