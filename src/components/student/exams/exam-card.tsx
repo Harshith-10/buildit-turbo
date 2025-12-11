@@ -24,7 +24,7 @@ interface Exam {
   difficulty: "easy" | "medium" | "hard";
   category: string;
   startDate?: Date | null;
-  status: "draft" | "upcoming" | "live" | "completed" | "missed" | "ongoing";
+  status: "draft" | "upcoming" | "live" | "completed" | "missed";
   expiryDate?: Date | null;
 }
 
@@ -55,7 +55,6 @@ export function ExamCard({
     draft: "bg-gray-500/10 text-gray-500",
     upcoming: "bg-blue-500/10 text-blue-500",
     live: "bg-green-500/10 text-green-500",
-    ongoing: "bg-green-500/10 text-green-500",
     completed: "bg-gray-500/10 text-gray-500",
     missed: "bg-red-500/10 text-red-500",
   };

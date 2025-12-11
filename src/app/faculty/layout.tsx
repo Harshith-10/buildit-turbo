@@ -7,7 +7,6 @@ import {
 } from "lucide-react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { getNotifications } from "@/actions/student/notifications";
 import { SidebarProvider } from "@/components/animate-ui/components/radix/sidebar";
 import {
   AppSidebar,
@@ -110,13 +109,11 @@ export default async function FacultyLayout({
     redirect("/");
   }
 
-  const notifications = await getNotifications();
-
   return (
     <SidebarProvider>
       <AppSidebar sections={facultySections} />
       <main className="flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out">
-        <Header notifications={notifications} />
+        <Header />
         <div className="flex-1 p-6 space-y-6">{children}</div>
       </main>
     </SidebarProvider>

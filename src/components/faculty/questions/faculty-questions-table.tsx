@@ -76,7 +76,7 @@ export function FacultyQuestionsTable({
                   {problem.difficulty}
                 </Badge>
               </TableCell>
-              <TableCell>{problem.acceptance}%</TableCell>
+              <TableCell>{problem.acceptance ?? 0}%</TableCell>
               <TableCell className="text-right">
                 <Button variant="ghost" size="icon" asChild>
                   <Link href={`/faculty/questions/${problem.id}`}>

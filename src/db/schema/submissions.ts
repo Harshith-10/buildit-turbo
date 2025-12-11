@@ -1,5 +1,13 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
+import {
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  unique,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { user } from "./auth";
 import { submissionStatusEnum } from "./enums";
 import { exams } from "./exams";
@@ -25,6 +33,22 @@ export const submissions = pgTable(
 
     runtime: text("runtime"), // e.g. "50ms"
     memory: text("memory"), // e.g. "14.2MB"
+
+    // Execution results from Turbo system
+    testCaseResults: jsonb("test_case_results").$type<
+      {
+        id: number;
+        passed: boolean;
+        actual_output: string;
+        error: string;
+        time: string;
+        memory: string;
+      }[]
+    >(),
+    totalTests: integer("total_tests"),
+    passedTests: integer("passed_tests"),
+    compilationError: text("compilation_error"),
+    executionError: text("execution_error"),
 
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },

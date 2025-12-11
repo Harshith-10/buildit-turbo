@@ -6,8 +6,8 @@ import { db } from "@/db";
 import { exams } from "@/db/schema/exams";
 
 export const metadata: Metadata = {
-  title: "Ongoing Exams | Student Portal",
-  description: "View and take your ongoing exams",
+  title: "Live Exams | Student Portal",
+  description: "View and take your live exams",
 };
 
 interface PageProps {
@@ -24,7 +24,7 @@ export default async function OngoingExamsPage(props: PageProps) {
   const searchParams = await props.searchParams;
   const q = searchParams.q || "";
   const view = (searchParams.view as "grid" | "list" | "table") || "grid";
-  // Default sort for ongoing is expiry (sooner first) if not specified
+  // Default sort for live exams is expiry (sooner first) if not specified
   const sort = searchParams.sort || "expiry";
   const category = searchParams.category || "all";
   const difficulty = searchParams.difficulty || "all";
@@ -69,9 +69,9 @@ export default async function OngoingExamsPage(props: PageProps) {
   return (
     <div className="flex flex-col gap-6 p-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Ongoing Exams</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Live Exams</h1>
         <p className="text-muted-foreground">
-          Continue your exams that are currently in progress.
+          Take exams that are currently available.
         </p>
       </div>
 

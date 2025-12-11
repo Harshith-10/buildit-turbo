@@ -20,11 +20,11 @@ async function checkFacultyAccess() {
   return session.user;
 }
 
-export type CreateQuestionInput = typeof problems.$inferInsert & {
+export type CreateQuestionInput = Omit<typeof problems.$inferInsert, 'serialNumber' | 'creatorId'> & {
   tags?: string[];
 };
 
-export type UpdateQuestionInput = Partial<typeof problems.$inferInsert> & {
+export type UpdateQuestionInput = Partial<Omit<typeof problems.$inferInsert, 'serialNumber' | 'creatorId'>> & {
   tags?: string[];
 };
 
@@ -161,10 +161,17 @@ export async function createQuestion(data: CreateQuestionInput) {
   const { tags, ...problemData } = data;
 
   const result = await db.transaction(async (tx) => {
+    // Get the next serial number
+    const maxSerialResult = await tx
+      .select({ max: sql<number>`COALESCE(MAX(${problems.serialNumber}), 0)` })
+      .from(problems);
+    const nextSerial = (maxSerialResult[0]?.max || 0) + 1;
+
     const [newQuestion] = await tx
       .insert(problems)
       .values({
         ...problemData,
+        serialNumber: nextSerial,
         creatorId: user.id,
       })
       .returning();

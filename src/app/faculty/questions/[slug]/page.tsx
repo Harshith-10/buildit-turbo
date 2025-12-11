@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getQuestionBySlug } from "@/actions/faculty/questions";
+import { getQuestion } from "@/actions/faculty/questions";
 import { QuestionForm } from "@/components/faculty/questions/question-form";
 
 export default async function UpdateQuestionPage({
@@ -7,9 +7,15 @@ export default async function UpdateQuestionPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
+  const { slug: id } = await params; // Route param is named 'slug' but it's actually the ID
+  
   try {
-    const question = await getQuestionBySlug(slug);
+    const question = await getQuestion(id);
+
+    if (!question) {
+      console.error(`[UpdateQuestionPage] Question not found with ID: ${id}`);
+      notFound();
+    }
 
     return (
       <div className="space-y-6">
@@ -20,7 +26,8 @@ export default async function UpdateQuestionPage({
         <QuestionForm initialData={question} isEditing />
       </div>
     );
-  } catch {
+  } catch (error) {
+    console.error(`[UpdateQuestionPage] Error loading question with ID: ${id}`, error);
     notFound();
   }
 }

@@ -1,7 +1,8 @@
 "use client";
 
 import { Maximize2 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState, cloneElement, type ReactElement } from "react";
 import { toast } from "sonner";
 import { logMalpractice } from "@/actions/student/exam";
 import {
@@ -15,31 +16,46 @@ import {
 import { Button } from "@/components/ui/button";
 
 interface ExamWrapperProps {
-  children: React.ReactNode;
+  children: ReactElement<{ malpracticeCount?: number }>;
   examId: string;
   sessionId: string;
+  initialMalpracticeCount?: number;
 }
 
 export function ExamWrapper({
   children,
-  examId: _examId,
+  examId,
   sessionId,
+  initialMalpracticeCount = 0,
 }: ExamWrapperProps) {
+  const router = useRouter();
   const [isFullscreen, setIsFullscreen] = useState(true);
-  const [_malpracticeCount, setMalpracticeCount] = useState(0);
+  const [malpracticeCount, setMalpracticeCount] = useState(initialMalpracticeCount);
 
   const handleMalpractice = useCallback(
     async (type: string) => {
-      setMalpracticeCount((prev) => prev + 1);
-      toast.error("Malpractice warning recorded!");
-
       try {
-        await logMalpractice(sessionId, type);
+        const result = await logMalpractice(sessionId, type);
+        
+        if (result.success) {
+          setMalpracticeCount(result.totalCount);
+          
+          if (result.shouldAutoSubmit) {
+            toast.error("Maximum warnings exceeded. Exam auto-submitted.");
+            // Redirect to finalize page
+            setTimeout(() => {
+              router.push(`/student/exams/${examId}/finalize`);
+            }, 2000);
+          } else {
+            toast.error(`Malpractice warning recorded! (${result.totalCount}/3)`);
+          }
+        }
       } catch (error) {
         console.error("Failed to log malpractice", error);
+        toast.error("Failed to log malpractice");
       }
     },
-    [sessionId],
+    [sessionId, examId, router],
   );
 
   useEffect(() => {
@@ -79,9 +95,12 @@ export function ExamWrapper({
     }
   };
 
+  // Clone children and pass malpracticeCount as prop
+  const childrenWithProps = cloneElement(children, { malpracticeCount });
+
   return (
     <>
-      {children}
+      {childrenWithProps}
 
       <AlertDialog open={!isFullscreen}>
         <AlertDialogContent>

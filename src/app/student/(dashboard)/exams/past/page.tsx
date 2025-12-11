@@ -28,8 +28,7 @@ export default async function PastExamsPage(props: PageProps) {
   const category = searchParams.category || "all";
   const difficulty = searchParams.difficulty || "all";
 
-  // Past exams are completed or missed (or just not upcoming/ongoing/draft)
-  // Assuming 'completed' and 'missed' are the statuses for past exams
+  // Past exams are completed or missed (not upcoming/live/draft)
   const whereConditions = [inArray(exams.status, ["completed", "missed"])];
 
   if (q) {
