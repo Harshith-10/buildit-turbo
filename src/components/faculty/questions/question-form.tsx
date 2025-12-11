@@ -66,7 +66,7 @@ export function QuestionForm({
 
   // Test cases state (up to 5 visible + 5 hidden = 10 total)
   const [testCases, setTestCases] = useState<{ id: number; input: string; expected: string; hidden: boolean }[]>(
-    initialData?.testCases || [{ id: 1, input: "", expected: "", hidden: false }]
+    initialData?.testCases?.map(tc => ({ ...tc, hidden: tc.hidden ?? false })) || [{ id: 1, input: "", expected: "", hidden: false }]
   );
 
   // Starter code state
